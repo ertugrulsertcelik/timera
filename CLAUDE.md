@@ -1,4 +1,4 @@
-# Timesheet — Claude Code Rehberi (v1.0.0)
+# Timesheet — Claude Code Rehberi (v1.1.0)
 
 ## Proje Özeti
 7/24 çalışan ekipler için yarım saatlik blok tabanlı zaman takip uygulaması.
@@ -637,3 +637,26 @@ crontab -e
 # Şu satırı ekle:
 0 3 * * * /home/ubuntu/timera/scripts/backup.sh >> /home/ubuntu/backups/backup.log 2>&1
 ```
+
+---
+
+## Versiyon Geçmişi
+
+### v1.1.0
+- Mobil uyumluluk: WeekPage tap-to-select (iki adımlı seçim, sticky banner, ESC iptal), responsive layout
+- Alt tab bar: Mobilde sabit bottom nav (Ana Sayfa, Onaylar, İzin, Çıkış), pending badge
+- LoginPage mobile: yüzen kartlar mobilde gizlendi, responsive padding
+- Touch: min-height 44px butonlar, input font-size 16px (iOS zoom engeli)
+- Güvenlik: nginx header'ları (HSTS, X-Frame, CSP vb.), rate limiting (login 5/dk, api 30/sn)
+- Port 3001 kapalı (backend internal), swap bellek, otomatik backup scripti
+- Self-signed SSL / HTTPS zorunlu yönlendirme
+- Non-root Docker user (backend + nginx worker: `timera`)
+- PWA: manifest.json, icon.svg, 192/512px PNG üretimi (librsvg), theme-color, apple-touch-icon
+
+### v1.0.0
+- İlk production release
+- Tüm sayfalar: LoginPage, WeekPage, ApprovalsPage, ProjectsPage, ReportsPage, LeaderboardPage, UsersPage, LeavePage, WebhooksPage
+- Gamification (XP, streak, rozetler), haftalık Excel/PDF export, Slack/Teams webhook bildirimleri
+- İzin takibi (bakiye, takvim, manager onay akışı)
+- JWT + Refresh Token auth, brute-force koruması, idle timeout
+- Docker Compose production (multi-stage Dockerfile, nginx SPA, deploy.sh)

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Turuncu daire arka plan -->
+  <circle cx="256" cy="256" r="256" fill="#F4631E"/>
+  <!-- Beyaz saat çemberi -->
+  <circle cx="256" cy="256" r="148" fill="none" stroke="white" stroke-width="22"/>
+  <!-- Dakika göstergesi (12:00 konumundan 3:00'a) -->
+  <line x1="256" y1="256" x2="256" y2="148" stroke="white" stroke-width="22" stroke-linecap="round"/>
+  <!-- Saat göstergesi (12:00'dan 3:00 yönüne) -->
+  <line x1="256" y1="256" x2="330" y2="305" stroke="white" stroke-width="16" stroke-linecap="round"/>
+  <!-- Merkez nokta -->
+  <circle cx="256" cy="256" r="14" fill="white"/>
+</svg>

@@ -80,7 +80,7 @@ export function Sidebar({ pendingCount = 0, gamification }: SidebarProps) {
 
   return (
     <aside
-      className="flex flex-col flex-shrink-0"
+      className="hidden md:flex flex-col flex-shrink-0"
       style={{
         width: 220,
         height: "100vh",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import "./index.css";
 import { LoginPage } from "./pages/LoginPage";
 import { WeekPage } from "./pages/WeekPage";
@@ -163,6 +163,68 @@ function IdleMonitor({ onIdle }: { onIdle: () => void }) {
   return null;
 }
 
+// ── Mobil alt tab bar ─────────────────────────────────────────────────────────
+function MobileTabBar() {
+  const { user, logout } = useAuthStore();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    if (user?.role !== "MANAGER") return;
+    api.get<{ id: string }[]>("/approvals")
+      .then((d) => setPendingCount(d.length))
+      .catch(() => {});
+  }, [user?.role, pathname]);
+
+  const tabs: { icon: string; label: string; path: string | null; badge?: number }[] = [
+    { icon: "ti-calendar-week", label: "Ana Sayfa", path: "/" },
+    ...(user?.role === "MANAGER"
+      ? [{ icon: "ti-checks", label: "Onaylar", path: "/approvals", badge: pendingCount }]
+      : []),
+    { icon: "ti-beach", label: "İzin", path: "/leaves" },
+    { icon: "ti-user", label: "Çıkış", path: null },
+  ];
+
+  return (
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40"
+      style={{ background: "#FFFFFF", borderTop: "1px solid #E5E7EB", boxShadow: "0 -2px 8px rgba(0,0,0,0.06)" }}>
+      <div className="flex" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+        {tabs.map((tab) => {
+          const active = tab.path !== null && pathname === tab.path;
+          return (
+            <button key={tab.label}
+              onClick={() => tab.path ? navigate(tab.path) : logout()}
+              style={{
+                flex: 1, display: "flex", flexDirection: "column",
+                alignItems: "center", justifyContent: "center", gap: 2,
+                background: "none", border: "none", cursor: "pointer",
+                padding: "8px 0", minHeight: 56,
+              }}>
+              <div style={{ position: "relative" }}>
+                <i className={`ti ${tab.icon}`} style={{ fontSize: 22, color: active ? "#F4631E" : "#9CA3AF" }} />
+                {tab.badge != null && tab.badge > 0 && (
+                  <span style={{
+                    position: "absolute", top: -4, right: -7,
+                    background: "#F4631E", color: "white",
+                    fontSize: 9, fontWeight: 700, lineHeight: 1,
+                    padding: "2px 4px", borderRadius: 99, minWidth: 14, textAlign: "center",
+                  }}>
+                    {tab.badge > 99 ? "99+" : tab.badge}
+                  </span>
+                )}
+              </div>
+              <span style={{ fontSize: 10, color: active ? "#F4631E" : "#9CA3AF", fontWeight: active ? 600 : 400 }}>
+                {tab.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // ── Route koruma ──────────────────────────────────────────────────────────────
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user);
@@ -210,6 +272,7 @@ function App() {
       {user?.mustChangePassword && <SetInitialPasswordModal onDone={handlePasswordSet} />}
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        {/* MobileTabBar tüm korumalı rotalarda görünür */}
         <Route path="/" element={<ProtectedRoute><WeekPage /></ProtectedRoute>} />
         <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
         <Route path="/leaves" element={<ProtectedRoute><LeavePage /></ProtectedRoute>} />
@@ -255,6 +318,7 @@ function App() {
         />
         <Route path="/*" element={<Navigate to="/" replace />} />
       </Routes>
+      {user && <MobileTabBar />}
     </BrowserRouter>
   );
 }

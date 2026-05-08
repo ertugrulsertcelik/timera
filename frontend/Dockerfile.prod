@@ -10,6 +10,11 @@ ARG VITE_API_URL
 ENV VITE_API_URL=${VITE_API_URL}
 RUN npm run build
 
+# PWA ikonları için SVG → PNG dönüştür (librsvg)
+RUN apk add --no-cache librsvg && \
+    rsvg-convert -w 192 -h 192 -o /app/dist/icon-192.png /app/dist/icon.svg && \
+    rsvg-convert -w 512 -h 512 -o /app/dist/icon-512.png /app/dist/icon.svg
+
 # ── Stage 2: Nginx ────────────────────────────────────────────────────────────
 FROM nginx:alpine AS runner
 

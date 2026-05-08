@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 
+const isMobile = typeof window !== "undefined" && (window.innerWidth < 768 || "ontouchstart" in window);
+
 const BLOCKS = [
   { w: 148, top: "14%", left: "6%", delay: "0s", label: "Sprint planning", color: "rgba(255,255,255,0.90)" },
   { w: 124, top: "28%", left: "62%", delay: "0.5s", label: "K8s upgrade", color: "rgba(255,255,255,0.80)" },
@@ -58,8 +60,8 @@ export function LoginPage() {
           background: "radial-gradient(ellipse 70% 60% at 30% 30%, rgba(255,255,255,0.12) 0%, transparent 70%)",
         }} />
 
-        {/* Yüzen aktivite kartları */}
-        {BLOCKS.map((b, i) => (
+        {/* Yüzen aktivite kartları — mobilde gizlenir */}
+        {!isMobile && BLOCKS.map((b, i) => (
           <div key={i}
             className="absolute flex items-center gap-2 px-3 rounded-xl text-xs font-medium select-none"
             style={{
@@ -77,7 +79,7 @@ export function LoginPage() {
             <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-white opacity-80" />
             {b.label}
           </div>
-        ))}
+        )}
 
         {/* Marka içeriği */}
         <div className="relative z-10 flex flex-col justify-between h-full p-10">
@@ -135,7 +137,7 @@ export function LoginPage() {
       </div>
 
       {/* ── Sağ panel: giriş formu ────────────────────────────────────── */}
-      <div className="flex-1 flex items-center justify-center px-6 py-12"
+      <div className="flex-1 flex items-center justify-center px-6 py-8 md:py-12"
         style={{ background: "#FFFFFF" }}>
         <div className="w-full max-w-sm"
           style={{

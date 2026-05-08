@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-
+import { useState, useEffect, useRef } from "react";
 
 import { useAuthStore } from "../store/authStore";
 import { useEntries } from "../hooks/useEntries";
@@ -50,7 +49,6 @@ function slotToTime(index: number): string {
 
 const DAY_LABELS = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 const SLOTS = Array.from({ length: 48 }, (_, i) => i);
-const SLOT_H = 28;
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
 
@@ -67,16 +65,14 @@ const T = {
   red: "#E8302A",
   amber: "#F9A825",
   green: "#16A34A",
-  purple: "#7B1FA2",
 };
 
 const STATUS = {
-  DRAFT: { label: "Taslak", color: "#6B7280", bg: "#F9FAFB", border: "#E5E7EB" },
-  PENDING: { label: "Bekliyor", color: "#92400E", bg: "#FFFBEB", border: "#FDE68A" },
-  APPROVED: { label: "Onaylı", color: "#166534", bg: "#F0FDF4", border: "#86EFAC" },
+  DRAFT:    { label: "Taslak",     color: "#6B7280", bg: "#F9FAFB", border: "#E5E7EB" },
+  PENDING:  { label: "Bekliyor",   color: "#92400E", bg: "#FFFBEB", border: "#FDE68A" },
+  APPROVED: { label: "Onaylı",     color: "#166534", bg: "#F0FDF4", border: "#86EFAC" },
   REJECTED: { label: "Reddedildi", color: "#991B1B", bg: "#FEF2F2", border: "#FECACA" },
 };
-
 
 // ─── BlockModal ───────────────────────────────────────────────────────────────
 
@@ -88,9 +84,10 @@ interface BlockModalProps {
   onClose: () => void;
   saving: boolean;
   error: string;
+  isMobile: boolean;
 }
 
-function BlockModal({ startSlot, endSlot, projects, onSave, onClose, saving, error }: BlockModalProps) {
+function BlockModal({ startSlot, endSlot, projects, onSave, onClose, saving, error, isMobile }: BlockModalProps) {
   const [projectId, setProjectId] = useState(projects[0]?.id ?? "");
   const [note, setNote] = useState("");
 
@@ -100,20 +97,38 @@ function BlockModal({ startSlot, endSlot, projects, onSave, onClose, saving, err
   const crossMidnight = endSlot >= 47;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)" }}
+    <div
+      className="fixed inset-0 z-50 flex justify-center"
+      style={{
+        alignItems: isMobile ? "flex-end" : "center",
+        padding: isMobile ? 0 : "0 16px",
+        background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)",
+      }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="w-full max-w-sm rounded-2xl p-6"
-        style={{ background: T.surface, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", border: `1px solid ${T.border}` }}>
+      <div
+        className="w-full overflow-y-auto"
+        style={{
+          maxWidth: isMobile ? "100%" : 384,
+          maxHeight: isMobile ? "85vh" : undefined,
+          padding: 24,
+          background: T.surface,
+          borderRadius: isMobile ? "20px 20px 0 0" : 16,
+          boxShadow: isMobile ? "0 -4px 30px rgba(0,0,0,0.15)" : "0 20px 60px rgba(0,0,0,0.15)",
+          border: `1px solid ${T.border}`,
+          animation: isMobile ? "slideUp 0.25s ease" : undefined,
+        }}>
+
+        {isMobile && (
+          <div style={{ width: 36, height: 4, borderRadius: 99, background: T.border, margin: "0 auto 16px" }} />
+        )}
 
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-bold text-base" style={{ color: T.text }}>Zaman Girişi</h3>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 18 }}>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 18, minHeight: 44, minWidth: 44, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <i className="ti ti-x" />
           </button>
         </div>
 
-        {/* Saat aralığı */}
         <div className="flex items-center gap-2 mb-5">
           <span className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-semibold"
             style={{ background: T.orangeL, color: T.orange }}>
@@ -124,13 +139,13 @@ function BlockModal({ startSlot, endSlot, projects, onSave, onClose, saving, err
           <span className="text-sm" style={{ color: T.muted }}>{hours} saat</span>
         </div>
 
-        {/* Proje */}
         <label className="block text-sm font-semibold mb-2" style={{ color: T.text }}>Proje</label>
         <div className="space-y-1.5 max-h-40 overflow-y-auto mb-4">
           {projects.map((p) => (
             <button key={p.id} type="button" onClick={() => setProjectId(p.id)}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-left transition-all"
+              className="w-full flex items-center gap-2.5 px-3 rounded-xl text-sm text-left transition-all"
               style={{
+                minHeight: 44,
                 background: projectId === p.id ? p.color + "15" : T.bg,
                 border: `1.5px solid ${projectId === p.id ? p.color : T.border}`,
                 color: projectId === p.id ? T.text : T.text2,
@@ -142,7 +157,6 @@ function BlockModal({ startSlot, endSlot, projects, onSave, onClose, saving, err
           ))}
         </div>
 
-        {/* Not */}
         <label className="block text-sm font-semibold mb-2" style={{ color: T.text }}>Ne yaptın?</label>
         <textarea
           value={note} onChange={(e) => setNote(e.target.value.slice(0, 500))}
@@ -166,13 +180,14 @@ function BlockModal({ startSlot, endSlot, projects, onSave, onClose, saving, err
         )}
 
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-            style={{ background: T.bg, border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
+          <button onClick={onClose} className="flex-1 rounded-xl text-sm font-medium"
+            style={{ minHeight: 44, background: T.bg, border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
             Vazgeç
           </button>
           <button onClick={() => onSave(projectId, note)} disabled={saving || !projectId}
-            className="flex-1 py-2.5 rounded-xl text-sm font-bold"
+            className="flex-1 rounded-xl text-sm font-bold"
             style={{
+              minHeight: 44,
               background: saving || !projectId ? T.border : `linear-gradient(135deg, ${T.orange}, ${T.red})`,
               color: saving || !projectId ? T.muted : "white",
               border: "none", cursor: saving || !projectId ? "not-allowed" : "pointer",
@@ -195,23 +210,43 @@ interface EditModalProps {
   onClose: () => void;
   saving: boolean;
   error: string;
+  isMobile: boolean;
 }
 
-function EditEntryModal({ entry, projects, onSave, onClose, saving, error }: EditModalProps) {
+function EditEntryModal({ entry, projects, onSave, onClose, saving, error, isMobile }: EditModalProps) {
   const [projectId, setProjectId] = useState(entry.projectId);
   const [note, setNote] = useState(entry.note ?? "");
   const sm = STATUS[entry.status as keyof typeof STATUS];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style={{ background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)" }}
+    <div
+      className="fixed inset-0 z-50 flex justify-center"
+      style={{
+        alignItems: isMobile ? "flex-end" : "center",
+        padding: isMobile ? 0 : "0 16px",
+        background: "rgba(0,0,0,0.3)", backdropFilter: "blur(4px)",
+      }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="w-full max-w-sm rounded-2xl p-6"
-        style={{ background: T.surface, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", border: `1px solid ${T.border}` }}>
+      <div
+        className="w-full overflow-y-auto"
+        style={{
+          maxWidth: isMobile ? "100%" : 384,
+          maxHeight: isMobile ? "85vh" : undefined,
+          padding: 24,
+          background: T.surface,
+          borderRadius: isMobile ? "20px 20px 0 0" : 16,
+          boxShadow: isMobile ? "0 -4px 30px rgba(0,0,0,0.15)" : "0 20px 60px rgba(0,0,0,0.15)",
+          border: `1px solid ${T.border}`,
+          animation: isMobile ? "slideUp 0.25s ease" : undefined,
+        }}>
+
+        {isMobile && (
+          <div style={{ width: 36, height: 4, borderRadius: 99, background: T.border, margin: "0 auto 16px" }} />
+        )}
 
         <div className="flex items-center justify-between mb-5">
           <h3 className="font-bold text-base" style={{ color: T.text }}>Girişi Düzenle</h3>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 18 }}>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: T.muted, cursor: "pointer", fontSize: 18, minHeight: 44, minWidth: 44, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <i className="ti ti-x" />
           </button>
         </div>
@@ -242,8 +277,9 @@ function EditEntryModal({ entry, projects, onSave, onClose, saving, error }: Edi
         <div className="space-y-1.5 max-h-40 overflow-y-auto mb-4">
           {projects.map((p) => (
             <button key={p.id} type="button" onClick={() => setProjectId(p.id)}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-left"
+              className="w-full flex items-center gap-2.5 px-3 rounded-xl text-sm text-left"
               style={{
+                minHeight: 44,
                 background: projectId === p.id ? p.color + "15" : T.bg,
                 border: `1.5px solid ${projectId === p.id ? p.color : T.border}`,
                 color: projectId === p.id ? T.text : T.text2,
@@ -277,13 +313,14 @@ function EditEntryModal({ entry, projects, onSave, onClose, saving, error }: Edi
         )}
 
         <div className="flex gap-2">
-          <button onClick={onClose} className="flex-1 py-2.5 rounded-xl text-sm font-medium"
-            style={{ background: T.bg, border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
+          <button onClick={onClose} className="flex-1 rounded-xl text-sm font-medium"
+            style={{ minHeight: 44, background: T.bg, border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
             Vazgeç
           </button>
           <button onClick={() => onSave(projectId, note)} disabled={saving || !projectId}
-            className="flex-1 py-2.5 rounded-xl text-sm font-bold"
+            className="flex-1 rounded-xl text-sm font-bold"
             style={{
+              minHeight: 44,
               background: saving || !projectId ? T.border : `linear-gradient(135deg, ${T.orange}, ${T.red})`,
               color: saving || !projectId ? T.muted : "white",
               border: "none", cursor: saving || !projectId ? "not-allowed" : "pointer",
@@ -306,9 +343,11 @@ interface TimeGridProps {
   onAddEntry: (projectId: string, note: string, startTime: string, endTime: string) => Promise<void>;
   onDeleteEntry: (id: string) => void;
   onUpdateEntry: (id: string, projectId: string, note: string) => Promise<void>;
+  isMobile: boolean;
+  slotH: number;
 }
 
-function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdateEntry }: TimeGridProps) {
+function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdateEntry, isMobile, slotH }: TimeGridProps) {
   const [selecting, setSelecting] = useState(false);
   const [selectStart, setSelectStart] = useState<number | null>(null);
   const [selectEnd, setSelectEnd] = useState<number | null>(null);
@@ -316,6 +355,9 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const gridRef = useRef<HTMLDivElement>(null);
+
+  // Mobil: iki-dokunuş seçim
+  const [mobileSelectStart, setMobileSelectStart] = useState<number | null>(null);
 
   const [popoverEntry, setPopoverEntry] = useState<{ entry: TimeEntry; x: number; y: number } | null>(null);
   const [editEntry, setEditEntry] = useState<TimeEntry | null>(null);
@@ -325,14 +367,21 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
   const isToday = date === new Date().toISOString().slice(0, 10);
   const [nowPx, setNowPx] = useState(() => {
     const d = new Date();
-    return ((d.getHours() * 60 + d.getMinutes()) / 30) * SLOT_H;
+    return ((d.getHours() * 60 + d.getMinutes()) / 30) * slotH;
   });
   useEffect(() => {
     const id = setInterval(() => {
       const d = new Date();
-      setNowPx(((d.getHours() * 60 + d.getMinutes()) / 30) * SLOT_H);
+      setNowPx(((d.getHours() * 60 + d.getMinutes()) / 30) * slotH);
     }, 30_000);
     return () => clearInterval(id);
+  }, [slotH]);
+
+  // ESC → mobil seçimi iptal et
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) { if (e.key === "Escape") setMobileSelectStart(null); }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   const dayEntries = entries.filter((e) => e.date === date);
@@ -344,6 +393,7 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
     for (let i = s; i < end; i++) occupiedSlots.add(i);
   }
 
+  // ── Masaüstü sürükleme ──────────────────────────────────────────────────────
   function handleSlotMouseDown(slot: number) {
     if (occupiedSlots.has(slot)) return;
     setSelecting(true); setSelectStart(slot); setSelectEnd(slot);
@@ -360,9 +410,28 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
     setSelecting(false);
   }
   useEffect(() => {
+    if (isMobile) return;
     window.addEventListener("mouseup", handleMouseUp);
     return () => window.removeEventListener("mouseup", handleMouseUp);
-  }, [selecting, selectStart, selectEnd]);
+  }, [isMobile, selecting, selectStart, selectEnd]);
+
+  // ── Mobil tap-to-select ────────────────────────────────────────────────────
+  function handleSlotClick(slot: number) {
+    if (occupiedSlots.has(slot)) return;
+    if (mobileSelectStart === null) {
+      setMobileSelectStart(slot);
+    } else {
+      const min = Math.min(mobileSelectStart, slot);
+      const max = Math.max(mobileSelectStart, slot);
+      let blocked = false;
+      for (let i = min; i <= max; i++) {
+        if (occupiedSlots.has(i)) { blocked = true; break; }
+      }
+      if (blocked) { setMobileSelectStart(null); return; }
+      setSelectStart(min); setSelectEnd(max);
+      setShowModal(true); setMobileSelectStart(null);
+    }
+  }
 
   async function handleSave(projectId: string, note: string) {
     if (selectStart === null || selectEnd === null) return;
@@ -414,19 +483,43 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
 
   return (
     <div className="relative select-none" ref={gridRef}>
+
+      {/* Mobil seçim banner — sticky (ilk slot seçildikten sonra görünür) */}
+      {isMobile && mobileSelectStart !== null && (
+        <div style={{
+          position: "sticky", top: 0, zIndex: 15,
+          background: "#FFF7ED", borderBottom: "1px solid #FED7AA",
+          padding: "10px 14px",
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <i className="ti ti-hand-click" style={{ fontSize: 15, color: T.orange }} />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#9A3412" }}>Bitiş saatini seç</span>
+            <span style={{ fontSize: 12, fontFamily: "DM Mono, monospace", fontWeight: 700, color: T.orange }}>
+              {slotToTime(mobileSelectStart)}
+            </span>
+          </div>
+          <button
+            onClick={() => setMobileSelectStart(null)}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#9A3412", fontSize: 18, lineHeight: 1, padding: "4px 8px", minHeight: 44, display: "flex", alignItems: "center" }}>
+            <i className="ti ti-x" />
+          </button>
+        </div>
+      )}
+
       <div className="flex">
 
         {/* Saat etiketleri */}
-        <div className="flex-shrink-0" style={{ width: 56, background: "#FAFAFA" }}>
+        <div className="flex-shrink-0" style={{ width: isMobile ? 48 : 56, background: "#FAFAFA" }}>
           {SLOTS.map((slot) => (
             <div key={slot} style={{
-              height: SLOT_H,
+              height: slotH,
               display: "flex", alignItems: "flex-start", justifyContent: "flex-end",
-              paddingRight: 10, paddingTop: 4,
+              paddingRight: isMobile ? 6 : 10, paddingTop: 4,
               borderBottom: `1px solid ${slot % 2 === 0 ? T.border : T.border2}`,
             }}>
               {slot % 2 === 0 && (
-                <span style={{ fontSize: 10, color: T.muted, fontFamily: "DM Mono, monospace" }}>
+                <span style={{ fontSize: isMobile ? 9 : 10, color: T.muted, fontFamily: "DM Mono, monospace" }}>
                   {slotToTime(slot)}
                 </span>
               )}
@@ -442,17 +535,22 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
             const isSelected = slot >= selMin && slot <= selMax;
             const isOccupied = occupiedSlots.has(slot);
             const isHour = slot % 2 === 0;
+            const isMobileStart = isMobile && mobileSelectStart === slot;
             return (
               <div
                 key={slot}
                 className={`time-slot${isOccupied ? " occupied" : ""}${isSelected ? " selected" : ""}`}
                 style={{
-                  height: SLOT_H,
+                  height: slotH,
                   borderBottom: `1px solid ${isHour ? T.border : T.border2}`,
-                  cursor: isOccupied ? "default" : "crosshair",
+                  cursor: isOccupied ? "default" : (isMobile ? "pointer" : "crosshair"),
+                  background: isMobileStart ? `${T.orange}18` : undefined,
+                  outline: isMobileStart ? `2px solid ${T.orange}` : undefined,
+                  outlineOffset: -2,
                 }}
-                onMouseDown={() => handleSlotMouseDown(slot)}
-                onMouseEnter={() => handleSlotMouseEnter(slot)}
+                onMouseDown={isMobile ? undefined : () => handleSlotMouseDown(slot)}
+                onMouseEnter={isMobile ? undefined : () => handleSlotMouseEnter(slot)}
+                onClick={isMobile ? () => handleSlotClick(slot) : undefined}
               />
             );
           })}
@@ -461,8 +559,8 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
           {dayEntries.map((e) => {
             const s = slotIndex(e.startTime);
             const end = slotIndex(e.endTime);
-            const top = s * SLOT_H + 2;
-            const height = (end - s) * SLOT_H - 4;
+            const top = s * slotH + 2;
+            const height = (end - s) * slotH - 4;
             const color = projects.find((p) => p.id === e.projectId)?.color ?? T.orange;
             const proj = projects.find((p) => p.id === e.projectId);
             const active = popoverEntry?.entry.id === e.id;
@@ -490,7 +588,6 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
                 onClick={(ev) => openPopover(e, ev)}
                 title={e.status === "REJECTED" && rejNote && height < 56 ? `Red sebebi: ${rejNote}` : undefined}
               >
-                {/* Sol: proje adı + not */}
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, flex: 1 }}>
                   <span style={{ fontSize: 12, fontWeight: 600, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {proj?.name}
@@ -508,7 +605,6 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
                   )}
                 </div>
 
-                {/* Sağ: saat + durum */}
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", flexShrink: 0, marginLeft: 8, gap: 2 }}>
                   <span style={{ fontSize: 10, fontFamily: "DM Mono, monospace", color: "#999", whiteSpace: "nowrap" }}>
                     {e.startTime} – {e.endTime}
@@ -522,7 +618,6 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
                   </span>
                 </div>
 
-                {/* Sil butonu — hover'da görünür, sadece DRAFT */}
                 {e.status === "DRAFT" && (
                   <button
                     onClick={(ev) => { ev.stopPropagation(); onDeleteEntry(e.id); }}
@@ -547,10 +642,10 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
             </div>
           )}
 
-          {/* Seçim overlay */}
-          {selecting && selectStart !== null && selMin >= 0 && (
+          {/* Masaüstü seçim overlay */}
+          {!isMobile && selecting && selectStart !== null && selMin >= 0 && (
             <div className="pointer-events-none absolute" style={{
-              top: selMin * SLOT_H, height: (selMax - selMin + 1) * SLOT_H,
+              top: selMin * slotH, height: (selMax - selMin + 1) * slotH,
               left: 4, right: 4,
               border: `2px dashed ${T.orange}60`,
               borderRadius: 8, zIndex: 4,
@@ -581,7 +676,7 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
           startSlot={Math.min(selectStart, selectEnd)}
           endSlot={Math.max(selectStart, selectEnd)}
           projects={projects} onSave={handleSave} onClose={handleCloseModal}
-          saving={saving} error={saveError}
+          saving={saving} error={saveError} isMobile={isMobile}
         />
       )}
 
@@ -654,7 +749,7 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
       {editEntry && (
         <EditEntryModal entry={editEntry} projects={projects}
           onSave={handleEditSave} onClose={() => setEditEntry(null)}
-          saving={editSaving} error={editError}
+          saving={editSaving} error={editError} isMobile={isMobile}
         />
       )}
     </div>
@@ -665,6 +760,9 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
 
 export function WeekPage() {
   const { user } = useAuthStore();
+
+  const [isMobile] = useState(() => typeof window !== "undefined" && (window.innerWidth < 768 || "ontouchstart" in window));
+  const slotH = isMobile ? 36 : 28;
 
   const [week, setWeek] = useState(() => getISOWeek(new Date()));
   const [activeDate, setActiveDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -678,6 +776,7 @@ export function WeekPage() {
 
   const today = new Date().toISOString().slice(0, 10);
   const gridScrollRef = useRef<HTMLDivElement>(null);
+  const dayTabsRef = useRef<HTMLDivElement>(null);
   const savedScrollRef = useRef(0);
   const initialLoaded = useRef(false);
 
@@ -693,10 +792,17 @@ export function WeekPage() {
   useEffect(() => {
     if (activeDate === today && gridScrollRef.current) {
       const d = new Date();
-      const px = ((d.getHours() * 60 + d.getMinutes()) / 30) * SLOT_H;
+      const px = ((d.getHours() * 60 + d.getMinutes()) / 30) * slotH;
       gridScrollRef.current.scrollTop = Math.max(0, px - 120);
     }
-  }, [activeDate]);
+  }, [activeDate, slotH]);
+
+  // Aktif gün sekmesini görünüme kaydır
+  useEffect(() => {
+    if (!dayTabsRef.current) return;
+    const el = dayTabsRef.current.querySelector("[data-active='true']") as HTMLElement | null;
+    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [activeDate, week]);
 
   const weekDates = getWeekDates(week);
 
@@ -716,7 +822,6 @@ export function WeekPage() {
     if (!weekDates.includes(activeDate)) setActiveDate(weekDates[0]);
   }, [week]);
 
-  // İstatistikler
   function calcMin(list: TimeEntry[]) {
     return list.reduce((acc, e) => {
       const [sh, sm] = e.startTime.split(":").map(Number);
@@ -784,36 +889,61 @@ export function WeekPage() {
     { label: "Reddedilen", value: `${fmt(rejectedMin)} sa`, sub: `${rejectedEntries.length} giriş reddedildi`, accent: T.red, icon: "ti-circle-x" },
   ];
 
+  // Mobil submit bar içeriği (hem sabit mobil hem masaüstü kullanır)
+  const submitBarContent = (
+    <>
+      <span className="text-sm" style={{ color: submitMsg ? T.green : T.muted }}>
+        {submitMsg || (hasDraft
+          ? `${dayEntries.filter((e) => e.status === "DRAFT").length} taslak giriş var`
+          : "Tüm girişler gönderildi")}
+      </span>
+      <button onClick={handleSubmit} disabled={!hasDraft}
+        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all"
+        style={{
+          background: hasDraft ? `linear-gradient(135deg, ${T.orange}, ${T.red})` : T.border,
+          color: hasDraft ? "white" : T.muted,
+          border: "none", cursor: hasDraft ? "pointer" : "not-allowed",
+          boxShadow: hasDraft ? `0 4px 12px ${T.orange}30` : "none",
+          minHeight: 44,
+        }}>
+        <i className="ti ti-send text-sm" />
+        Onaya Gönder
+      </button>
+    </>
+  );
+
   return (
     <div className="flex min-h-screen" style={{ background: T.bg }}>
 
+      {/* Sidebar — masaüstünde görünür (Sidebar kendi CSS'iyle mobilde gizlenir) */}
       <Sidebar gamification={gamification} />
 
       {/* Ana içerik */}
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Topbar */}
-        <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0"
+        <header className="flex items-center justify-between px-4 md:px-6 py-3 flex-shrink-0"
           style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-          <div className="flex items-center gap-3">
-            <span className="text-base font-bold" style={{ color: T.text }}>Zaman Girişi</span>
+          <div className="flex items-center gap-2 md:gap-3">
+            <span className="text-sm md:text-base font-bold" style={{ color: T.text }}>Zaman Girişi</span>
             <div className="flex items-center gap-1">
               <button onClick={() => setWeek(addWeeks(week, -1))}
-                className="w-7 h-7 flex items-center justify-center rounded-lg transition-all"
-                style={{ background: T.bg, border: `1px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
+                className="flex items-center justify-center rounded-lg transition-all"
+                style={{ width: isMobile ? 36 : 28, height: isMobile ? 36 : 28, minHeight: 36, background: T.bg, border: `1px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
                 <i className="ti ti-chevron-left" style={{ fontSize: 13 }} />
               </button>
-              <span className="text-sm font-medium px-3" style={{ color: T.text2, minWidth: 140, textAlign: "center" }}>
+              <span className="text-xs md:text-sm font-medium px-2 md:px-3 text-center"
+                style={{ color: T.text2, minWidth: isMobile ? 100 : 140 }}>
                 {weekLabel()}
               </span>
               <button onClick={() => setWeek(addWeeks(week, 1))}
-                className="w-7 h-7 flex items-center justify-center rounded-lg transition-all"
-                style={{ background: T.bg, border: `1px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
+                className="flex items-center justify-center rounded-lg transition-all"
+                style={{ width: isMobile ? 36 : 28, height: isMobile ? 36 : 28, minHeight: 36, background: T.bg, border: `1px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
                 <i className="ti ti-chevron-right" style={{ fontSize: 13 }} />
               </button>
               <button onClick={() => { setWeek(getISOWeek(new Date())); setActiveDate(today); }}
                 className="px-3 py-1 rounded-lg text-xs font-medium transition-all ml-1"
-                style={{ background: T.orangeL, border: `1px solid ${T.orange}30`, color: T.orange, cursor: "pointer" }}>
+                style={{ background: T.orangeL, border: `1px solid ${T.orange}30`, color: T.orange, cursor: "pointer", minHeight: 36 }}>
                 Bugün
               </button>
             </div>
@@ -822,7 +952,7 @@ export function WeekPage() {
 
         {/* İzin banner */}
         {approvedLeaves.some((l) => l.date === activeDate) && (
-          <div className="flex items-center gap-3 px-6 py-3 flex-shrink-0"
+          <div className="flex items-center gap-3 px-4 md:px-6 py-3 flex-shrink-0"
             style={{ background: "#F0FDF4", borderBottom: "1px solid #86EFAC" }}>
             <i className="ti ti-beach flex-shrink-0" style={{ color: "#16A34A" }} />
             <span className="text-sm flex-1" style={{ color: "#14532D" }}>
@@ -831,35 +961,38 @@ export function WeekPage() {
           </div>
         )}
 
-        {/* Banner */}
+        {/* Hatırlatma banner */}
         {showBanner && (
-          <div className="flex items-center gap-3 px-6 py-3 flex-shrink-0"
+          <div className="flex items-center gap-3 px-4 md:px-6 py-3 flex-shrink-0"
             style={{ background: "#FFFBEB", borderBottom: "1px solid #FDE68A" }}>
             <i className="ti ti-alert-triangle flex-shrink-0" style={{ color: "#F59E0B" }} />
             <span className="text-sm flex-1" style={{ color: "#92400E" }}>
               Bugün henüz giriş yapmadın — hadi bir blok seç!
             </span>
             <button onClick={() => setBannerDismissedDate(today)}
-              style={{ background: "none", border: "none", color: "#B45309", cursor: "pointer" }}>
+              style={{ background: "none", border: "none", color: "#B45309", cursor: "pointer", minHeight: 44, minWidth: 44 }}>
               <i className="ti ti-x text-sm" />
             </button>
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        {/* Kaydırılabilir içerik */}
+        <div
+          className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-5"
+          style={{ paddingBottom: isMobile ? 160 : 20 }}>
 
-          {/* Stat kartları */}
-          <div className="grid grid-cols-4 gap-4 mb-5">
-            {/* Bu Hafta — mini durum çubuğu */}
-            <div className="rounded-xl px-4 py-4"
+          {/* Stat kartları — mobilde 2 sütun, masaüstünde 4 sütun */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-5">
+            {/* Bu Hafta */}
+            <div className="rounded-xl px-3 md:px-4 py-3 md:py-4"
               style={{ background: T.surface, borderTop: `3px solid ${T.orange}`, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs font-semibold" style={{ color: T.muted }}>Bu Hafta</p>
-                <span className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: T.orange + "15" }}>
+                <span className="w-6 h-6 md:w-7 md:h-7 rounded-lg flex items-center justify-center" style={{ background: T.orange + "15" }}>
                   <i className="ti ti-clock text-sm" style={{ color: T.orange }} />
                 </span>
               </div>
-              <p className="text-2xl font-black" style={{ color: T.text }}>{fmt(totalMin)} sa</p>
+              <p className="text-xl md:text-2xl font-black" style={{ color: T.text }}>{fmt(totalMin)} sa</p>
               {totalMin > 0 ? (
                 <div style={{ display: "flex", height: 4, borderRadius: 99, overflow: "hidden", marginTop: 8, marginBottom: 4, gap: 1 }}>
                   {draftMin    > 0 && <div style={{ flex: draftMin,    background: "#9CA3AF", borderRadius: 2 }} />}
@@ -874,22 +1007,22 @@ export function WeekPage() {
             </div>
 
             {statCards.map((s) => (
-              <div key={s.label} className="rounded-xl px-4 py-4"
+              <div key={s.label} className="rounded-xl px-3 md:px-4 py-3 md:py-4"
                 style={{ background: T.surface, borderTop: `3px solid ${s.accent}`, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-xs font-semibold" style={{ color: T.muted }}>{s.label}</p>
-                  <span className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: s.accent + "15" }}>
+                  <span className="w-6 h-6 md:w-7 md:h-7 rounded-lg flex items-center justify-center" style={{ background: s.accent + "15" }}>
                     <i className={`ti ${s.icon} text-sm`} style={{ color: s.accent }} />
                   </span>
                 </div>
-                <p className="text-2xl font-black" style={{ color: T.text }}>{s.value}</p>
-                <p className="text-xs mt-0.5" style={{ color: T.muted }}>{s.sub}</p>
+                <p className="text-xl md:text-2xl font-black" style={{ color: T.text }}>{s.value}</p>
+                <p className="text-xs mt-0.5 truncate" style={{ color: T.muted }}>{s.sub}</p>
               </div>
             ))}
           </div>
 
-          {/* Gün sekmeleri */}
-          <div className="flex gap-1.5 mb-4">
+          {/* Gün sekmeleri — yatay kaydırılabilir */}
+          <div ref={dayTabsRef} className="flex gap-1.5 mb-4 overflow-x-auto no-scrollbar pb-1">
             {weekDates.map((date, i) => {
               const cnt = entries.filter((e) => e.date === date).length;
               const hasPend = entries.some((e) => e.date === date && e.status === "PENDING");
@@ -899,13 +1032,16 @@ export function WeekPage() {
               const leave = approvedLeaves.find((l) => l.date === date);
 
               return (
-                <button key={date} onClick={() => setActiveDate(date)}
-                  className="flex flex-col items-center px-3 py-2 rounded-xl transition-all"
+                <button key={date}
+                  data-active={String(isActive)}
+                  onClick={() => setActiveDate(date)}
+                  className="flex flex-col items-center px-3 py-2 rounded-xl transition-all flex-shrink-0"
                   style={{
                     background: isActive ? T.orange : leave ? "#F0FDF4" : T.surface,
                     border: `1.5px solid ${isActive ? T.orange : leave ? "#86EFAC" : isTday ? T.orange + "50" : T.border}`,
-                    cursor: "pointer", minWidth: 58,
+                    cursor: "pointer", minWidth: 52,
                     boxShadow: isActive ? `0 2px 8px ${T.orange}30` : "0 1px 2px rgba(0,0,0,0.04)",
+                    minHeight: 44,
                   }}>
                   <span className="text-xs font-bold" style={{ color: isActive ? "white" : T.text2 }}>
                     {DAY_LABELS[i]}
@@ -931,7 +1067,7 @@ export function WeekPage() {
             style={{ background: T.surface, border: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
 
             {/* Grid başlık */}
-            <div className="flex items-center justify-between px-5 py-3"
+            <div className="flex items-center justify-between px-4 md:px-5 py-3"
               style={{ borderBottom: `1px solid ${T.border}`, background: "#FAFAFA" }}>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-bold" style={{ color: T.text }}>
@@ -944,15 +1080,15 @@ export function WeekPage() {
                   </span>
                 )}
               </div>
-              <span className="text-xs" style={{ color: T.muted }}>
+              <span className="text-xs hidden sm:block" style={{ color: T.muted }}>
                 <i className="ti ti-hand-click text-xs mr-1" />
-                Sürükle veya tıkla
+                {isMobile ? "Tıklayarak seç" : "Sürükle veya tıkla"}
               </span>
             </div>
 
             {/* Scrollable grid */}
             <div ref={gridScrollRef} className="time-grid-scroll"
-              style={{ height: 480, overflowY: "auto" }}>
+              style={{ height: isMobile ? 420 : 480, overflowY: "auto" }}>
               {loading && !initialLoaded.current ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="flex items-center gap-2" style={{ color: T.muted }}>
@@ -964,32 +1100,26 @@ export function WeekPage() {
                   date={activeDate} entries={entries} projects={projects}
                   onAddEntry={handleAddEntry} onDeleteEntry={deleteEntry}
                   onUpdateEntry={handleUpdateEntry}
+                  isMobile={isMobile} slotH={slotH}
                 />
               )}
             </div>
 
-            {/* Submit bar */}
-            <div className="flex items-center justify-between px-5 py-3"
+            {/* Masaüstü submit bar */}
+            <div className="hidden md:flex items-center justify-between px-5 py-3"
               style={{ borderTop: `1px solid ${T.border}`, background: "#FAFAFA" }}>
-              <span className="text-sm" style={{ color: submitMsg ? T.green : T.muted }}>
-                {submitMsg || (hasDraft
-                  ? `${dayEntries.filter((e) => e.status === "DRAFT").length} taslak giriş var`
-                  : "Tüm girişler gönderildi")}
-              </span>
-              <button onClick={handleSubmit} disabled={!hasDraft}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all"
-                style={{
-                  background: hasDraft ? `linear-gradient(135deg, ${T.orange}, ${T.red})` : T.border,
-                  color: hasDraft ? "white" : T.muted,
-                  border: "none", cursor: hasDraft ? "pointer" : "not-allowed",
-                  boxShadow: hasDraft ? `0 4px 12px ${T.orange}30` : "none",
-                }}>
-                <i className="ti ti-send text-sm" />
-                Onaya Gönder
-              </button>
+              {submitBarContent}
             </div>
           </div>
         </div>
+
+        {/* Mobil submit bar — sabit, tab bar'ın üzerinde */}
+        {isMobile && (
+          <div className="fixed left-0 right-0 z-30 flex items-center justify-between px-4 py-3 md:hidden"
+            style={{ bottom: 64, background: T.surface, borderTop: `1px solid ${T.border}`, boxShadow: "0 -2px 8px rgba(0,0,0,0.06)" }}>
+            {submitBarContent}
+          </div>
+        )}
       </div>
     </div>
   );

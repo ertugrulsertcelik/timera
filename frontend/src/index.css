@@ -35,6 +35,19 @@
 /* ── Toast ────────────────────────────────────────────────────────────────── */
 @keyframes toastIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
 
+/* ── Mobil — iOS zoom engeli & genel kurallar ────────────────────────────── */
+input, textarea, select { font-size: 16px; } /* iOS'da focus zoom'u engeller */
+
+/* ── Gün sekmeleri gizli scrollbar ───────────────────────────────────────── */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ── Mobil modal slide-up animasyonu ─────────────────────────────────────── */
+@keyframes slideUp {
+  from { transform: translateY(48px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
 input::placeholder { color: #9CA3AF; }
 input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
