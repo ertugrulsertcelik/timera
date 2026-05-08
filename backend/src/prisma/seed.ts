@@ -1,6 +1,11 @@
 import { PrismaClient, Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
+if (process.env.NODE_ENV === "production") {
+  console.error("[Seed] Production ortamında seed çalıştırılamaz. NODE_ENV=production");
+  process.exit(1);
+}
+
 const prisma = new PrismaClient();
 
 async function main() {

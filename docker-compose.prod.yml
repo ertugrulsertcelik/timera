@@ -5,16 +5,18 @@ services:
     image: postgres:16-alpine
     container_name: timesheet_db_prod
     restart: unless-stopped
+    env_file: .env.prod
     environment:
-      POSTGRES_USER: ${DB_USER:-timesheet}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_NAME:-timesheet}
+      POSTGRES_USER: ${POSTGRES_USER:-timesheet}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-timesheet}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - internal
+    # ports direktifi yok — postgres sadece internal network'te erişilebilir
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-timesheet}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-timesheet}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,11 +27,12 @@ services:
       dockerfile: Dockerfile.prod
     container_name: timesheet_backend_prod
     restart: unless-stopped
+    env_file: .env.prod
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://${DB_USER:-timesheet}:${DB_PASSWORD}@postgres:5432/${DB_NAME:-timesheet}?connection_limit=10
+      DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
       JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
       MAIL_HOST: ${MAIL_HOST}
@@ -43,19 +46,22 @@ services:
     networks:
       - internal
       - web
+    # ports direktifi yok — backend sadece nginx üzerinden /api/ proxy ile erişilebilir
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:3001}
+        VITE_API_URL: ${VITE_API_URL:-https://localhost/api}
     container_name: timesheet_frontend_prod
     restart: unless-stopped
+    env_file: .env.prod
     depends_on:
       - backend
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - web
 

@@ -113,7 +113,7 @@ app.use(errorHandler);
 
 // ── Server ────────────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`Backend çalışıyor → http://localhost:${PORT}`);
+  console.info(`Backend çalışıyor → http://localhost:${PORT}`);
   startCronJobs();
   startCleanupJob();
 });

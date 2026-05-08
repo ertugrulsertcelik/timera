@@ -7,7 +7,7 @@ async function cleanupExpiredTokens() {
       where: { expiresAt: { lt: new Date() } },
     });
     if (result.count > 0) {
-      console.log(`[Cleanup] ${result.count} süresi dolmuş token silindi`);
+      console.info(`[Cleanup] ${result.count} süresi dolmuş token silindi`);
     }
   } catch (err) {
     console.error("[Cleanup] Token temizleme hatası:", err);
@@ -17,5 +17,5 @@ async function cleanupExpiredTokens() {
 export function startCleanupJob() {
   // Her gece 03:00 — Istanbul saati
   cron.schedule("0 3 * * *", cleanupExpiredTokens, { timezone: "Europe/Istanbul" });
-  console.log("Cleanup job kuruldu — Her gece 03:00 Istanbul");
+  console.info("Cleanup job kuruldu — Her gece 03:00 Istanbul");
 }

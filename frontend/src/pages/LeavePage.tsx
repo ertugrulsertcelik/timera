@@ -185,6 +185,7 @@ export function LeavePage() {
   const [balance, setBalance]  = useState<LeaveBalance | null>(null);
   const [users, setUsers]      = useState<{ id: string; name: string }[]>([]);
   const [filterUserId, setFilterUserId] = useState("");
+  const [loading, setLoading]  = useState(true);
 
   const [showCreate, setShowCreate] = useState(false);
   const [rejectTarget, setRejectTarget] = useState<LeaveRequest | null>(null);
@@ -217,8 +218,8 @@ export function LeavePage() {
   }
 
   useEffect(() => {
-    fetchLeaves();
-    fetchBalance();
+    setLoading(true);
+    Promise.all([fetchLeaves(), fetchBalance()]).finally(() => setLoading(false));
   }, [filterUserId]);
 
   useEffect(() => {
@@ -424,7 +425,12 @@ export function LeavePage() {
             <div className="px-5 py-3.5" style={{ borderBottom: `1px solid ${T.border}` }}>
               <h2 className="text-sm font-semibold" style={{ color: T.text }}>İzin Talepleri</h2>
             </div>
-            {leaves.length === 0 ? (
+            {loading ? (
+              <div className="py-16 text-center">
+                <i className="ti ti-loader-2 ti-spin" style={{ fontSize: 28, color: T.muted }} />
+                <p className="text-sm mt-2" style={{ color: T.muted }}>Yükleniyor...</p>
+              </div>
+            ) : leaves.length === 0 ? (
               <div className="py-16 text-center">
                 <i className="ti ti-beach" style={{ fontSize: 36, color: T.muted }} />
                 <p className="text-sm mt-2" style={{ color: T.muted }}>Henüz izin talebi yok</p>

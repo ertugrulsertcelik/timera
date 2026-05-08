@@ -298,7 +298,7 @@ export function ProjectsPage() {
     setLoading(true);
     api.get<Project[]>("/projects/all")
       .then(setProjects)
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setLoading(false));
   };
 

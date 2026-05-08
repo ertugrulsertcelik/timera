@@ -116,7 +116,7 @@ export function LeaderboardPage() {
         const me = data.find((e) => e.name === user?.name) ?? null;
         setMyEntry(me);
       })
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setLoading(false));
   }, [user?.name]);
 

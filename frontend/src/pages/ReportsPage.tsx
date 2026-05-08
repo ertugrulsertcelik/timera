@@ -138,12 +138,12 @@ export function ReportsPage() {
 
     api.get<EffortRow[]>(`/reports/effort${params}`)
       .then(setEffortData)
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setEffortLoading(false));
 
     api.get<SummaryRow[]>(`/reports/summary${params}`)
       .then((rows) => setSummaryData([...rows].sort((a, b) => b.hours - a.hours)))
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setSummaryLoading(false));
   }, [year, month]);
 

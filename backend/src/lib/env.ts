@@ -5,6 +5,8 @@ const REQUIRED = [
   "FRONTEND_URL",
 ] as const;
 
+const MAIL_VARS = ["MAIL_HOST", "MAIL_PORT", "MAIL_USER", "MAIL_PASS", "MAIL_FROM"] as const;
+
 export function validateEnv() {
   const missing = REQUIRED.filter((k) => !process.env[k]);
   if (missing.length > 0) {
@@ -24,5 +26,17 @@ export function validateEnv() {
     );
   }
 
-  console.log("[Env] Tüm ortam değişkenleri doğrulandı.");
+  if (!process.env.PORT) {
+    console.warn("[Env] PORT tanımlı değil, varsayılan 3001 kullanılacak.");
+  }
+  if (!process.env.NODE_ENV) {
+    console.warn("[Env] NODE_ENV tanımlı değil, geliştirme modu varsayılıyor.");
+  }
+
+  const missingMail = MAIL_VARS.filter((k) => !process.env[k]);
+  if (missingMail.length > 0) {
+    console.warn(`[Env] Mail değişkenleri eksik (${missingMail.join(", ")}) — haftalık mail bildirimleri devre dışı.`);
+  }
+
+  console.info("[Env] Tüm ortam değişkenleri doğrulandı.");
 }

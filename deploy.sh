@@ -9,6 +9,19 @@ if [ ! -f ".env.prod" ]; then
   exit 1
 fi
 
+# ── Swap kontrolü (1GB RAM için 2GB swap önerilir) ───────────────────────────
+if [ "$(swapon -s | wc -l)" -lt 2 ]; then
+  echo "▶ Swap bulunamadı, 2GB swap ekleniyor..."
+  sudo fallocate -l 2G /swapfile
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  sudo swapon /swapfile
+  echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+  echo "✓ Swap eklendi: 2GB"
+else
+  echo "✓ Swap zaten aktif, atlanıyor."
+fi
+
 echo "▶ Mevcut container'lar durduruluyor..."
 docker compose -f docker-compose.prod.yml --env-file .env.prod down
 
@@ -22,9 +35,15 @@ echo "▶ Prisma migration çalıştırılıyor..."
 docker compose -f docker-compose.prod.yml --env-file .env.prod exec backend \
   npx prisma db push --schema src/prisma/schema.prisma --accept-data-loss
 
+echo "▶ Kullanılmayan image'lar temizleniyor..."
+docker image prune -f
+
 echo ""
 echo "✓ Deploy tamamlandı!"
-echo "  Frontend: http://localhost (veya yapılandırdığınız alan adı)"
-echo "  Backend:  http://localhost/api"
+echo "  Frontend: https://$(hostname -I | awk '{print $1}') (self-signed SSL)"
+echo "  Backend:  https://$(hostname -I | awk '{print $1}')/api"
+echo ""
+echo "  NOT: Self-signed sertifika nedeniyle tarayıcıda güvenlik uyarısı çıkacak."
+echo "  Domain eklenince: certbot --nginx -d yourdomain.com"
 echo ""
 echo "  Log takibi: docker compose -f docker-compose.prod.yml logs -f"

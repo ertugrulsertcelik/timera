@@ -701,9 +701,9 @@ export function WeekPage() {
   const weekDates = getWeekDates(week);
 
   useEffect(() => {
-    api.get<Project[]>("/projects").then(setProjects).catch(console.error);
+    api.get<Project[]>("/projects").then(setProjects).catch(() => {});
     api.get<{ xpTotal: number; streakDays: number }>("/gamification/me")
-      .then(setGamification).catch(console.error);
+      .then(setGamification).catch(() => {});
   }, []);
 
   useEffect(() => {

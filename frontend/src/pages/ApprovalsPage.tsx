@@ -161,7 +161,7 @@ export function ApprovalsPage() {
     setLoading(true);
     api.get<PendingEntry[]>("/approvals")
       .then(setEntries)
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setLoading(false));
   };
 

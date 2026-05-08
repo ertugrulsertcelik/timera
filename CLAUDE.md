@@ -1,4 +1,4 @@
-# Timesheet — Claude Code Rehberi
+# Timesheet — Claude Code Rehberi (v1.0.0)
 
 ## Proje Özeti
 7/24 çalışan ekipler için yarım saatlik blok tabanlı zaman takip uygulaması.
@@ -410,3 +410,230 @@ chmod +x deploy.sh
 - Puppeteer, alpine'de `PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser` kullanır
 - `Dockerfile.prod`'da `chromium` + bağımlılıkları apk ile yükleniyor
 - Lokal geliştirmede puppeteer kendi chromium'unu indirir (otomatik)
+
+---
+
+## Production Checklist (v1.0.0)
+
+### Deploy Öncesi
+- [ ] `.env.prod` tüm zorunlu değişkenleri içeriyor (DATABASE_URL, JWT_SECRET ≥32 karakter, JWT_REFRESH_SECRET ≥32 karakter, FRONTEND_URL)
+- [ ] JWT secret'lar production-grade rastgele değer (örn: `openssl rand -base64 48`)
+- [ ] PostgreSQL production şifresi değiştirildi (varsayılan `timesheet_secret` kullanılmamalı)
+- [ ] `NODE_ENV=production` set edildi
+- [ ] Mail yapılandırması test edildi (opsiyonel; yoksa haftalık mail devre dışı)
+- [ ] FRONTEND_URL production domain'ini gösteriyor (wildcard `*` olmamalı)
+- [ ] `npx prisma db push` çalıştırıldı (tüm index'ler uygulandı)
+- [ ] Seed **çalıştırılmadı** (NODE_ENV=production ortamında zaten engellenir)
+
+### Deploy Sonrası
+- [ ] `/health` endpoint'i 200 döndürüyor
+- [ ] Login test edildi (rate limiter devrede mi?)
+- [ ] Manager/Employee yetki ayrımı test edildi
+- [ ] Excel ve PDF export çalışıyor (puppeteer chromium yüklü mü?)
+- [ ] Webhook test butonu başarılı sonuç döndürüyor
+
+---
+
+## Bilinen Kısıtlamalar
+
+- **Tek zaman dilimi:** Tüm zaman işlemleri `Europe/Istanbul` (UTC+3) üzerinden yapılır; farklı zaman diliminde çalışan ekiplerde sorun çıkabilir.
+- **PDF için Chromium:** Production'da Alpine Linux imajında `chromium` paketi kurulu olmalı; Dockerfile.prod bunu hallediyor ancak imaj boyutu büyük (~300MB+).
+- **Büyük bundle:** Frontend gzip sonrası ~187KB (single chunk). Ölçeklendirme gerekirse dynamic import ile code-splitting yapılmalı.
+- **Yıllık izin bakiyesi:** `annualLeaveDays` sayacı DB'de tutulur; yıl başında sıfırlama otomatik yapılmaz — manuel veya cron ile sıfırlanmalı.
+- **Audit Log yok:** Kim ne zaman ne değiştirdi bilgisi saklanmıyor (Yapılacaklar listesinde).
+
+---
+
+## Production Ortamı
+
+### Sunucu
+- Provider: Oracle Cloud Free Tier
+- IP: 92.5.156.75
+- OS: Ubuntu 22.04
+- Shape: VM.Standard.E2.1.Micro (1 OCPU, 1GB RAM)
+- User: ubuntu
+- SSH: ssh ubuntu@92.5.156.75
+
+### Kurulu Servisler
+- Docker + Docker Compose Plugin
+- Git
+
+### Proje Dizini
+- /home/ubuntu/timera
+
+### Env Dosyası
+- Sunucuda: /home/ubuntu/timera/.env.prod
+- Git'e commit edilmez (.gitignore'da)
+- Örnek: .env.prod.example
+
+### .env.prod İçeriği (production)
+- POSTGRES_USER=timesheet
+- POSTGRES_PASSWORD=Timera2026!Secure
+- POSTGRES_DB=timesheet
+- DATABASE_URL=postgresql://timesheet:Timera2026!Secure@postgres:5432/timesheet?connection_limit=10
+- JWT_SECRET=timera_jwt_super_secret_key_2026_production_minimum_32_char
+- JWT_REFRESH_SECRET=timera_refresh_super_secret_key_2026_production_minimum_32
+- FRONTEND_URL=https://92.5.156.75
+- VITE_API_URL=https://92.5.156.75/api
+- PORT=3001
+- NODE_ENV=production
+- MAIL_HOST= (boş, henüz ayarlanmadı)
+- MAIL_PORT=587
+- MAIL_USER= (boş)
+- MAIL_PASS= (boş)
+- MAIL_FROM=Timera <noreply@timera.local>
+
+### Docker Compose
+- Production: docker-compose.prod.yml
+- Development: docker-compose.yml
+- Her servisin env_file: .env.prod direktifi var
+
+### Container'lar
+- timesheet_db_prod (postgres:16-alpine)
+- timesheet_backend_prod (custom build — backend/Dockerfile.prod)
+- timesheet_frontend_prod (custom build — frontend/Dockerfile.prod)
+
+### Network
+- timera_internal: postgres ↔ backend
+- timera_web: backend ↔ frontend ↔ nginx
+
+### Nginx
+- Frontend container içinde çalışır
+- / → React app (static)
+- /api/ → backend:3001 (proxy)
+- Port 80'i dinler
+
+### Önemli Düzeltmeler Yapıldı
+- backend/Dockerfile.prod'a openssl eklendi (Prisma için şart)
+- docker-compose.prod.yml'e her servise env_file direktifi eklendi
+- VITE_API_URL .env.prod'a eklendi (frontend build sırasında alıyor)
+- DB_PASSWORD değişkeni yerine direkt şifre yazıldı
+
+---
+
+## Deploy Workflow
+
+### Branch Stratejisi
+- main → production
+- develop → test/staging
+- feature/xxx → yeni özellikler
+
+### Yeni Özellik Geliştirme
+1. develop branch'ine geç: git checkout develop
+2. Feature branch aç: git checkout -b feature/ozellik-adi
+3. Geliştir, local'de test et (docker-compose.yml ile)
+4. develop'a merge et: git checkout develop && git merge feature/ozellik-adi
+5. develop'da tam test et
+6. main'e merge et: git checkout main && git merge develop
+7. Push: git push origin main
+8. Sunucuda deploy: ssh ubuntu@92.5.156.75 → cd timera → ./deploy.sh
+
+### deploy.sh Ne Yapar?
+1. main branch kontrolü yapar (başka branch'te çalışmaz)
+2. git pull (son kodu çeker)
+3. docker compose build (image'ları yeniden build eder)
+4. docker compose up -d (container'ları yeniden başlatır)
+5. prisma migrate deploy (yeni migration varsa çalıştırır)
+6. eski image'ları temizler
+
+### Sık Kullanılan Komutlar
+
+```bash
+# Logları izle
+docker compose -f docker-compose.prod.yml --env-file .env.prod logs backend --tail=50 -f
+
+# Container durumu
+docker compose -f docker-compose.prod.yml --env-file .env.prod ps
+
+# Backend restart
+docker compose -f docker-compose.prod.yml --env-file .env.prod restart backend
+
+# DB'ye gir
+docker compose -f docker-compose.prod.yml --env-file .env.prod exec postgres psql -U timesheet -d timesheet
+
+# Manuel migration
+docker compose -f docker-compose.prod.yml --env-file .env.prod exec backend npx prisma db push --schema src/prisma/schema.prisma
+
+# Tüm sistemi durdur
+docker compose -f docker-compose.prod.yml --env-file .env.prod down
+
+# Tüm sistemi başlat
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+```
+
+### Rate Limit Sıfırlama
+Backend restart edince rate limit sıfırlanır:
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.prod restart backend
+```
+
+### Seed (yeni kullanıcı/proje eklemek için)
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.prod exec backend node -e "
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
+const prisma = new PrismaClient();
+// seed kodunu buraya yaz
+main().finally(() => prisma.\$disconnect());
+"
+```
+
+---
+
+## Bilinen Sorunlar ve Çözümleri
+
+### Prisma OpenSSL Hatası
+Sorun: "Prisma failed to detect the libssl/openssl version"
+Çözüm: backend/Dockerfile.prod'da her iki stage'e openssl eklendi
+
+### VITE_API_URL Boş
+Sorun: Frontend backend'e bağlanamıyor, "Failed to fetch"
+Çözüm: .env.prod'a VITE_API_URL=http://92.5.156.75/api ekle, frontend rebuild et
+
+### Rate Limit Kilidi
+Sorun: Çok fazla login denemesi, hesap kilitlendi
+Çözüm: Backend restart et, rate limit sıfırlanır
+
+### DB_PASSWORD Değişkeni
+Sorun: docker-compose.prod.yml ${DB_PASSWORD} okumuyor
+Çözüm: Direkt şifreyi yaz veya .env.prod'da DB_PASSWORD=... ekle
+
+### ts-node Seed Hatası
+Sorun: Production image'da dev dependencies yok, ts-node çalışmıyor
+Çözüm: node -e ile direkt JavaScript olarak çalıştır
+
+---
+
+## Yapılacaklar (Production)
+
+- [ ] Domain al ve SSL sertifikası ekle (Let's Encrypt + Certbot)
+- [ ] Mail (SMTP) ayarla
+- [ ] Sunucu monitoring ekle (UptimeRobot veya benzeri)
+- [ ] Firewall sıkılaştırma (sadece 22, 80, 443 açık olsun)
+
+---
+
+## Güvenlik Durumu
+
+| Güvenlik Kontrolü | Durum |
+|---|---|
+| Port 3001 kapalı (backend internal only) | ✅ |
+| HTTPS zorunlu (HTTP → 443 redirect) | ✅ |
+| Self-signed SSL (TLS 1.2 + 1.3) | ✅ |
+| Nginx güvenlik header'ları | ✅ |
+| Nginx rate limiting (login 5/dk, api 30/sn) | ✅ |
+| Swap bellek (deploy.sh otomatik ekler) | ✅ |
+| PostgreSQL internal only | ✅ |
+| Non-root Docker user (backend + nginx worker) | ✅ |
+| Otomatik backup (scripts/backup.sh) | ✅ |
+| SSL sertifikası (Let's Encrypt) | ⏳ Domain gerekli |
+| Mail bildirimleri | ⏳ SMTP gerekli |
+
+### Backup Crontab Kurulumu
+Sunucuda bir kez çalıştır:
+```bash
+chmod +x /home/ubuntu/timera/scripts/backup.sh
+crontab -e
+# Şu satırı ekle:
+0 3 * * * /home/ubuntu/timera/scripts/backup.sh >> /home/ubuntu/backups/backup.log 2>&1
+```

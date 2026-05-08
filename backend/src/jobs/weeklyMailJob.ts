@@ -3,9 +3,14 @@ import nodemailer from "nodemailer";
 import { prisma } from "../lib/prisma";
 
 async function sendWeeklySummary() {
+  if (!process.env.MAIL_HOST) {
+    console.info("Haftalik mail: MAIL_HOST tanimli degil, atlanıyor.");
+    return;
+  }
+
   const pendingCount = await prisma.timeEntry.count({ where: { status: "PENDING" } });
   if (pendingCount === 0) {
-    console.log("Haftalik mail: bekleyen giris yok, mail gonderilmedi");
+    console.info("Haftalik mail: bekleyen giris yok, mail gonderilmedi");
     return;
   }
 
@@ -37,11 +42,11 @@ async function sendWeeklySummary() {
     });
   }
 
-  console.log(`Haftalik mail gonderildi — ${pendingCount} bekleyen giris, ${managers.length} yonetici`);
+  console.info(`Haftalik mail gonderildi — ${pendingCount} bekleyen giris, ${managers.length} yonetici`);
 }
 
 export function startCronJobs() {
   // Her Cuma 17:00 — Istanbul saati
   cron.schedule("0 17 * * 5", sendWeeklySummary, { timezone: "Europe/Istanbul" });
-  console.log("Cron job kuruldu — Her Cuma 17:00 Istanbul");
+  console.info("Cron job kuruldu — Her Cuma 17:00 Istanbul");
 }
