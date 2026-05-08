@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx prisma:*)",
+      "Bash(python3:*)",
+      "Bash(node:*)",
+      "Bash(chmod:*)"
+    ]
+  }
+}

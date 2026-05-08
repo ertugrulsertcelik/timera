@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: timesheet_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: timesheet
+      POSTGRES_PASSWORD: timesheet_secret
+      POSTGRES_DB: timesheet
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    container_name: timesheet_backend
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://timesheet:timesheet_secret@postgres:5432/timesheet
+      JWT_SECRET: change_me_in_production
+      JWT_REFRESH_SECRET: change_me_refresh_in_production
+      MAIL_HOST: smtp.example.com
+      MAIL_PORT: 587
+      MAIL_USER: noreply@example.com
+      MAIL_PASS: mail_password
+      MAIL_FROM: "Timesheet <noreply@example.com>"
+      FRONTEND_URL: http://localhost:3000
+      PORT: 3001
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build: ./frontend
+    container_name: timesheet_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  postgres_data:

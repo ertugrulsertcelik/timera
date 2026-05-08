@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  EMPLOYEE
+  MANAGER
+}
+
+enum EntryStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum LeaveType {
+  ANNUAL
+  SICK
+  UNPAID
+  PUBLIC_HOLIDAY
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum BadgeType {
+  EARLY_BIRD
+  FULL_WEEK
+  STREAK_5
+  STREAK_10
+  STREAK_30
+  FIRST_ENTRY
+}
+
+model User {
+  id             String        @id @default(cuid())
+  name           String
+  email          String        @unique
+  passwordHash   String
+  role           Role          @default(EMPLOYEE)
+  isActive            Boolean       @default(true)
+  mustChangePassword  Boolean       @default(false)
+  weeklyTargetHours   Float         @default(40.0)
+  annualLeaveDays     Int           @default(14)
+  loginAttempts       Int           @default(0)
+  lockedUntil         DateTime?
+  createdAt      DateTime      @default(now())
+  entries        TimeEntry[]
+  approvals      Approval[]    @relation("ManagerApprovals")
+  gamification   Gamification?
+  badges         Badge[]
+  refreshTokens  RefreshToken[]
+  leaveRequests  LeaveRequest[]
+  managedLeaves  LeaveRequest[] @relation("ManagerLeaveApprovals")
+}
+
+model Project {
+  id          String      @id @default(cuid())
+  name        String
+  color       String
+  description String?
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  entries     TimeEntry[]
+}
+
+// date: "YYYY-MM-DD", startTime/endTime: "HH:MM"
+// 7 gun destegi var — haftasonu da girilebilir
+model TimeEntry {
+  id        String      @id @default(cuid())
+  userId    String
+  projectId String
+  date      String
+  startTime String
+  endTime   String
+  note      String      @default("")
+  status    EntryStatus @default(DRAFT)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  user      User        @relation(fields: [userId], references: [id])
+  project   Project     @relation(fields: [projectId], references: [id])
+  approval  Approval?
+
+  @@unique([userId, date, startTime])
+  @@index([userId, date])
+  @@index([status])
+}
+
+model Approval {
+  id        String    @id @default(cuid())
+  entryId   String    @unique
+  managerId String
+  action    String
+  note      String?
+  createdAt DateTime  @default(now())
+  entry     TimeEntry @relation(fields: [entryId], references: [id])
+  manager   User      @relation("ManagerApprovals", fields: [managerId], references: [id])
+}
+
+model Gamification {
+  id            String  @id @default(cuid())
+  userId        String  @unique
+  xpTotal       Int     @default(0)
+  streakDays    Int     @default(0)
+  lastEntryDate String?
+  user          User    @relation(fields: [userId], references: [id])
+}
+
+model Badge {
+  id       String    @id @default(cuid())
+  userId   String
+  type     BadgeType
+  earnedAt DateTime  @default(now())
+  user     User      @relation(fields: [userId], references: [id])
+
+  @@unique([userId, type])
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum WebhookType {
+  SLACK
+  TEAMS
+}
+
+enum WebhookEvent {
+  ENTRY_SUBMITTED
+  ENTRY_APPROVED
+  ENTRY_REJECTED
+  LEAVE_APPROVED
+  LEAVE_REJECTED
+}
+
+model WebhookConfig {
+  id        String         @id @default(cuid())
+  name      String
+  type      WebhookType
+  url       String
+  events    WebhookEvent[]
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model LeaveRequest {
+  id          String      @id @default(cuid())
+  userId      String
+  date        String
+  type        LeaveType
+  note        String?
+  status      LeaveStatus @default(PENDING)
+  managerId   String?
+  managerNote String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id])
+  manager     User?       @relation("ManagerLeaveApprovals", fields: [managerId], references: [id])
+
+  @@unique([userId, date])
+  @@index([userId, status])
+  @@index([date])
+}
