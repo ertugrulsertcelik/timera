@@ -10,7 +10,7 @@ import { Project } from "../types";
 const T = {
   bg: "#F5F6FA", surface: "#FFFFFF", border: "#E5E7EB",
   text: "#111827", text2: "#4B5563", muted: "#9CA3AF",
-  orange: "#F4631E", orangeL: "#FFF0EB",
+  orange: "#2563EB", orangeL: "#EFF6FF",
   green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
   red: "#991B1B", redL: "#FEF2F2", redB: "#FECACA",
 };
@@ -49,8 +49,8 @@ function initials(name: string) {
 }
 
 const AVATAR_COLORS = [
-  "#F4631E", "#7B1FA2", "#1565C0", "#00695C",
-  "#C2185B", "#E65100", "#4A148C", "#1A237E",
+  "#2563EB", "#7B1FA2", "#1565C0", "#00695C",
+  "#0284C7", "#E65100", "#4A148C", "#1A237E",
 ];
 function avatarColor(userId: string) {
   let hash = 0;
@@ -83,7 +83,7 @@ function RejectModal({ entry, onConfirm, onClose, loading }: RejectModalProps) {
         <div className="flex items-center gap-3 mb-4">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{ background: T.redL, border: `1px solid ${T.redB}` }}>
-            <i className="ti ti-x" style={{ fontSize: 16, color: "#E8302A" }} />
+            <i className="ti ti-x" style={{ fontSize: 16, color: "#1D4ED8" }} />
           </div>
           <div>
             <h3 className="font-semibold text-sm" style={{ color: T.text }}>Girişi Reddet</h3>
@@ -107,7 +107,7 @@ function RejectModal({ entry, onConfirm, onClose, loading }: RejectModalProps) {
             background: "#F9FAFB", border: `1.5px solid ${T.border}`,
             color: T.text, fontFamily: "DM Sans, sans-serif",
           }}
-          onFocus={(e) => { e.target.style.borderColor = "#E8302A"; e.target.style.background = "#FFFFFF"; }}
+          onFocus={(e) => { e.target.style.borderColor = "#1D4ED8"; e.target.style.background = "#FFFFFF"; }}
           onBlur={(e)  => { e.target.style.borderColor = T.border;   e.target.style.background = "#F9FAFB"; }}
         />
 
@@ -232,7 +232,7 @@ export function ApprovalsPage() {
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Topbar */}
-        <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0"
+        <header className="flex items-center justify-between px-4 md:px-6 py-3.5 flex-shrink-0"
           style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold" style={{ color: T.text }}>Bekleyen Onaylar</span>
@@ -259,7 +259,7 @@ export function ApprovalsPage() {
                 onMouseLeave={(e) => { if (!bulkApproving) e.currentTarget.style.background = T.greenL; }}
               >
                 <i className={`ti ${bulkApproving ? "ti-loader-2 animate-spin" : "ti-checks"} text-sm`} />
-                {bulkApproving ? "Onaylanıyor..." : "Tümünü Onayla"}
+                <span className="hidden sm:inline">{bulkApproving ? "Onaylanıyor..." : "Tümünü Onayla"}</span>
               </button>
             )}
             <button
@@ -275,7 +275,7 @@ export function ApprovalsPage() {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 pt-4 md:pt-5 pb-20 md:pb-5">
 
           {/* Yükleniyor */}
           {loading && (
@@ -357,7 +357,7 @@ export function ApprovalsPage() {
                       </div>
 
                       {/* Saat + süre */}
-                      <div className="text-right flex-shrink-0 mr-4">
+                      <div className="text-right flex-shrink-0 mr-4 hidden sm:block">
                         <p className="text-sm font-semibold" style={{ color: T.text, fontFamily: "DM Mono, monospace" }}>
                           {entry.startTime} – {entry.endTime}
                         </p>
@@ -382,7 +382,7 @@ export function ApprovalsPage() {
                           onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = T.greenL; }}
                         >
                           <i className="ti ti-check text-sm" />
-                          Onayla
+                          <span className="hidden sm:inline">Onayla</span>
                         </button>
                         <button
                           onClick={() => setRejectTarget(entry)}
@@ -398,7 +398,7 @@ export function ApprovalsPage() {
                           onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = T.redL; }}
                         >
                           <i className="ti ti-x text-sm" />
-                          Reddet
+                          <span className="hidden sm:inline">Reddet</span>
                         </button>
                       </div>
                     </div>
@@ -422,7 +422,7 @@ export function ApprovalsPage() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-xl text-xs font-semibold z-50"
+        <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-xl text-xs font-semibold z-50"
           style={{
             background: T.surface,
             border: `1px solid ${T.border}`,

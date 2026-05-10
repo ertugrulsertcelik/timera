@@ -1,5 +1,10 @@
 # Timesheet — Claude Code Rehberi (v1.1.0)
 
+## Geliştirici
+- **Adı:** Ertuğrul Sertçelik
+- **Versiyon:** v1.1.0
+- **Not:** Tüm ANKASOFT ibareleri kaldırıldı. Uygulama adı TIMERA, geliştirici Ertuğrul Sertçelik.
+
 ## Proje Özeti
 7/24 çalışan ekipler için yarım saatlik blok tabanlı zaman takip uygulaması.
 Oyunlaştırma (XP, seri, rozetler), proje bazlı renklendirme, manager onay akışı,
@@ -19,12 +24,12 @@ timesheet/
 │       │   ├── prisma.ts           # Singleton PrismaClient (connection_limit=10)
 │       │   └── env.ts              # Ortam değişkeni doğrulama (process.exit if missing)
 │       ├── prisma/
-│       │   ├── schema.prisma       # DB şeması (7 model)
+│       │   ├── schema.prisma       # DB şeması (9 model)
 │       │   └── seed.ts             # Test kullanıcıları ve örnek projeler
 │       ├── middleware/
 │       │   ├── auth.ts             # JWT doğrulama, rol kontrolü (requireAuth, requireManager)
 │       │   ├── errorHandler.ts     # Global error handler — Prisma P2002/P2025/P2003 Türkçe mesaj
-│       │   ├── rateLimiter.ts      # loginLimiter (5/3dk), refreshLimiter (20/15dk), apiLimiter (100/15dk)
+│       │   ├── rateLimiter.ts      # loginLimiter (10/5dk), refreshLimiter (30/1dk), apiLimiter (120/1dk)
 │       │   └── trimmer.ts          # req.body tüm string değerlerinde trim()
 │       ├── routes/
 │       │   ├── auth.ts             # POST /auth/login, /refresh, /logout
@@ -48,7 +53,7 @@ timesheet/
 │           └── cleanupJob.ts       # Her gece 03:00 cron — süresi dolmuş refresh token temizliği
 └── frontend/                       # React + Vite + TypeScript + Tailwind
     └── src/
-        ├── main.tsx                # Router, ProtectedRoute, ManagerRoute, IdleMonitor, SetInitialPasswordModal
+        ├── main.tsx                # Router, ProtectedRoute, ManagerRoute, MobileTabBar, IdleMonitor, SetInitialPasswordModal
         ├── index.css               # Tailwind base + custom animations
         ├── types/index.ts          # User, Project, TimeEntry, Gamification, Leave tipleri
         ├── api/client.ts           # Fetch wrapper — accessToken sessionStorage, refresh token rotation
@@ -60,7 +65,7 @@ timesheet/
         │   └── Sidebar.tsx         # Paylaşılan sidebar — useLocation ile aktif path
         └── pages/
             ├── LoginPage.tsx
-            ├── WeekPage.tsx        # 7 günlük grid, SLOT_H=28, entry blokları, izin entegrasyonu
+            ├── WeekPage.tsx        # 7 günlük grid, slotH=28(masaüstü)/36(mobil), entry blokları, tap-to-select, izin entegrasyonu
             ├── ApprovalsPage.tsx
             ├── ProjectsPage.tsx
             ├── ReportsPage.tsx     # Excel + PDF haftalık/aylık indirme
@@ -94,19 +99,23 @@ timesheet/
 
 ```
 User          → id, name, email, passwordHash, role (EMPLOYEE|MANAGER), isActive,
-                mustChangePassword, annualLeaveDays (default 14),
+                mustChangePassword, weeklyTargetHours (default 40.0), annualLeaveDays (default 14),
                 loginAttempts, lockedUntil, createdAt
 Project       → id, name, color (#hex), description, isActive, createdAt
 TimeEntry     → id, userId, projectId, date (YYYY-MM-DD), startTime (HH:MM),
                 endTime (HH:MM), note, status (DRAFT→PENDING→APPROVED|REJECTED)
                 @@unique([userId, date, startTime])   ← aynı kullanıcı+gün+saat tekrar giremez
-Approval      → id, entryId, managerId, action, note
-Gamification  → id, userId, xpTotal, streakDays, lastEntryDate
+                @@index([userId, date]), @@index([status])
+Approval      → id, entryId (@@unique), managerId, action, note
+Gamification  → id, userId (@@unique), xpTotal, streakDays, lastEntryDate
 Badge         → id, userId, type (EARLY_BIRD|STREAK_5|STREAK_10|STREAK_30|FULL_WEEK|FIRST_ENTRY)
-RefreshToken  → id, userId, token, expiresAt
+                @@unique([userId, type])   ← kullanıcı başına her rozetten bir tane
+RefreshToken  → id, userId, token (@@unique), expiresAt
+                @@index([userId]), @@index([expiresAt])
 LeaveRequest  → id, userId, date (YYYY-MM-DD), type (ANNUAL|SICK|UNPAID|PUBLIC_HOLIDAY),
                 note?, status (PENDING|APPROVED|REJECTED), managerId?, managerNote?
                 @@unique([userId, date])   ← aynı güne birden fazla talep olamaz
+                @@index([userId, status]), @@index([date])
 WebhookConfig → id, name, type (SLACK|TEAMS), url, events (WebhookEvent[]), isActive
                 WebhookEvent: ENTRY_SUBMITTED|ENTRY_APPROVED|ENTRY_REJECTED|LEAVE_APPROVED|LEAVE_REJECTED
 ```
@@ -116,7 +125,7 @@ WebhookConfig → id, name, type (SLACK|TEAMS), url, events (WebhookEvent[]), is
 ## Önemli İş Kuralları
 
 ### Zaman Girişi
-- Yarım saatlik bloklar: 00:00–23:30 arası (48 slot/gün), SLOT_H = 28px
+- Yarım saatlik bloklar: 00:00–23:30 arası (48 slot/gün), slotH = 28px (masaüstü) / 36px (mobil)
 - Haftanın 7 günü giriş yapılabilir (haftasonu dahil)
 - Gece yarısı geçen girişler (örn. 22:00–04:00) backend'e iki ayrı entry olarak gönderilir:
   - Birinci gün: 22:00–23:30
@@ -134,6 +143,7 @@ WebhookConfig → id, name, type (SLACK|TEAMS), url, events (WebhookEvent[]), is
 - `description` max 500 karakter
 
 ### Kullanıcı Yönetimi
+- `weeklyTargetHours` (default 40.0) — backend'de saklı, UsersPage üzerinden güncellenebilir (PUT /users/:id)
 - Admin kullanıcı oluştururken `mustChangePassword: true` set edilir
 - Admin şifre sıfırlarken de `mustChangePassword: true` set edilir
 - Kullanıcı ilk girişinde `SetInitialPasswordModal` gösterilir (mevcut şifre gerekmez)
@@ -159,10 +169,10 @@ WebhookConfig → id, name, type (SLACK|TEAMS), url, events (WebhookEvent[]), is
 ## Güvenlik Katmanı
 
 ### Backend
-- **Rate limiting:** `/auth/login` 5 istek/3dk, `/auth/refresh` 20/15dk, genel API 100/15dk
+- **Rate limiting:** `/auth/login` 10 istek/5dk, `/auth/refresh` 30/1dk, genel API 120/1dk
 - **Helmet:** CSP, X-Frame-Options: DENY, xContentTypeOptions
-- **CORS:** sadece `FRONTEND_URL` origin'ine izin ver, credentials: true
-- **Brute-force:** `loginAttempts` + `lockedUntil` (5 hatalı denemede 15dk kilit)
+- **CORS:** `FRONTEND_URL` origin'lerine izin ver (virgülle ayrılmış çoklu origin desteklenir), credentials: true
+- **Brute-force:** `loginAttempts` + `lockedUntil` (8 hatalı denemede 10dk kilit)
 - **Timing attack koruması:** kullanıcı bulunamazsa dummy `bcrypt.compare`
 - **Input sanitization:** `trimmer` middleware tüm string input'larda trim()
 - **Refresh token rotation:** `/auth/refresh` eskiyi siler, yenisini döner
@@ -321,21 +331,26 @@ npx ts-node src/prisma/seed.ts
 
 ## Tasarım Sistemi
 
-- **Tema:** Açık (light)
+- **Tema:** Açık (light), Mavi
 - **Ana arka plan:** `#F5F6FA`
 - **Panel/kart:** `#FFFFFF`
 - **Border:** `#E5E7EB` (ince), `#F3F4F6` (çok ince)
-- **Ana renk:** `#F4631E` (turuncu/aktif), `#E8302A` (kırmızı/hover)
+- **Ana renk:** `#2563EB` (mavi/aktif), `#1D4ED8` (koyu mavi/hover), `#1e2d4a` (lacivert/başlıklar)
+- **Açık ton:** `#EFF6FF` (açık mavi bg), `#DBEAFE`, `#BFDBFE`
+- **Streak/gamification rengi:** `#0EA5E9` (sky blue)
 - **Durum renkleri:** Onaylı `#16A34A`, Bekliyor `#92400E`, Reddedildi `#991B1B`, Taslak `#6B7280`
 - **Font:** DM Sans (UI), DM Mono (saat etiketleri)
 - **İkon seti:** Tabler Icons (webfont, `ti-` prefix)
+- **Logo:** `public/logo.png` (40×40 px, object-fit: contain)
+- **CSS değişkenler:** `--color-primary: #2563EB`, `--color-primary-dark: #1D4ED8`, `--color-primary-light: #EFF6FF`
+- **tailwind.config.js:** `brand.primary`, `brand.dark`, `brand.light`
 
 ---
 
 ## Tamamlanan Sayfalar & Özellikler
 
-- [x] `LoginPage` — form, hata yönetimi, test hesabı butonları, yanlış şifrede hata mesajı
-- [x] `WeekPage` — 7 günlük grid (SLOT_H=28), sürükle-seç blok girişi, modal, gece yarısı bölme, stat kartları (Bu Hafta mini durum çubuğu + Onaylanan + Bekleyen + Reddedilen), onaya gönder, entry blok görünümü (sol: ad+not, sağ: saat+badge, hover sil butonu), REJECTED bloklarda red sebebi (72px+ direkt, küçükte title tooltip)
+- [x] `LoginPage` — sol form + sağ özellik paneli (mavi tema), yüzen blob animasyonları, slideInLeft/Right, test hesabı yok
+- [x] `WeekPage` — 7 günlük grid (slotH=28/36), masaüstü sürükle-seç + mobil tap-to-select (iki adım, sticky banner, ESC iptal), modal (masaüstü merkez / mobil bottom-sheet slideUp), gece yarısı bölme, stat kartları (2→4 cols responsive), onaya gönder, REJECTED bloklarda red sebebi, izin entegrasyonu
 - [x] `ApprovalsPage` — manager onay ekranı (bekleyen girişleri listele, onayla/reddet, **Tümünü Onayla** — Promise.allSettled)
 - [x] `ProjectsPage` — proje ekle/düzenle/pasife al/sil, renk seçici
 - [x] `ReportsPage` — proje x kullanıcı bar chart (Recharts), aylık özet, Excel export, Haftalık PDF + Aylık PDF indirme (puppeteer)
@@ -354,6 +369,10 @@ npx ts-node src/prisma/seed.ts
 - [x] Webhook bildirimleri (backend) — approvals.ts, entries.ts (submit), leaves.ts (approve/reject) tetikleyicileri
 - [x] PDF export (backend) — puppeteer + HTML şablon, haftalık + aylık, kullanıcı filtreli
 - [x] Production Docker Compose — `docker-compose.prod.yml`, multi-stage Dockerfile, nginx SPA conf, `.env.prod.example`, `deploy.sh`
+- [x] Güvenlik (production) — nginx HTTPS + HTTP→HTTPS yönlendirme, self-signed SSL (TLS 1.2+1.3), güvenlik header'ları (HSTS/X-Frame/CSP/Referrer), rate limiting (login 5r/m, api 30r/s), non-root Docker user (`timera`), swap bellek, otomatik backup scripti
+- [x] Mobil uyumluluk — tap-to-select, bottom tab bar (MobileTabBar), responsive layout, bottom-sheet modals, input 16px (iOS zoom), min-height 44px butonlar
+- [x] Tüm sayfalarda mobil uyum — padding px-4 md:px-6, pb-20 md:pb-5 (tab bar boşluğu), tablo overflow-x-auto, buton metin hidden sm:inline, toast bottom-20 md:bottom-6, modal width min(440px,95vw)
+- [x] PWA — `manifest.json`, `icon.svg`, 192/512px PNG (librsvg), `theme-color`, `apple-touch-icon`
 
 ## Excel Formatı (exportService.ts)
 - Satır 1: Hafta no + tarih aralığı (birleştirilmiş)
@@ -376,7 +395,7 @@ npx ts-node src/prisma/seed.ts
 - [ ] Toplu Onay (ApprovalsPage'de filtre + toplu seçim)
 - [ ] Tekrarlayan Görev Şablonları
 - [ ] Audit Log
-- [ ] PWA Desteği
+- [x] PWA Desteği
 
 ---
 
@@ -388,7 +407,7 @@ npx ts-node src/prisma/seed.ts
 | `docker-compose.prod.yml` | Production compose — postgres + backend + frontend |
 | `backend/Dockerfile.prod` | Multi-stage: build → alpine runner (chromium için) |
 | `frontend/Dockerfile.prod` | Multi-stage: vite build → nginx |
-| `frontend/nginx.prod.conf` | SPA yönlendirme + `/api/` proxy + cache headers |
+| `frontend/nginx.prod.conf` | Tam nginx.conf — HTTPS (80→443), SSL, güvenlik header'ları, rate limiting, SPA + `/api/` proxy |
 | `.env.prod.example` | Ortam değişkeni şablonu |
 | `deploy.sh` | Tek komutla deploy scripti |
 
@@ -413,7 +432,7 @@ chmod +x deploy.sh
 
 ---
 
-## Production Checklist (v1.0.0)
+## Production Checklist (v1.1.0)
 
 ### Deploy Öncesi
 - [ ] `.env.prod` tüm zorunlu değişkenleri içeriyor (DATABASE_URL, JWT_SECRET ≥32 karakter, JWT_REFRESH_SECRET ≥32 karakter, FRONTEND_URL)
@@ -498,10 +517,13 @@ chmod +x deploy.sh
 - timera_web: backend ↔ frontend ↔ nginx
 
 ### Nginx
-- Frontend container içinde çalışır
-- / → React app (static)
-- /api/ → backend:3001 (proxy)
-- Port 80'i dinler
+- Frontend container içinde çalışır (worker: `timera` non-root)
+- Port 80 → 301 HTTPS yönlendirmesi
+- Port 443 → SSL (self-signed, TLS 1.2+1.3)
+- / → React SPA (static, try_files)
+- /api/auth/login → login rate limit (5r/m) + backend:3001/auth/login proxy
+- /api/ → api rate limit (30r/s) + backend:3001/ proxy
+- Güvenlik header'ları: HSTS, X-Frame-Options DENY, X-Content-Type-Options, CSP, Referrer-Policy, Permissions-Policy
 
 ### Önemli Düzeltmeler Yapıldı
 - backend/Dockerfile.prod'a openssl eklendi (Prisma için şart)
@@ -529,12 +551,14 @@ chmod +x deploy.sh
 8. Sunucuda deploy: ssh ubuntu@92.5.156.75 → cd timera → ./deploy.sh
 
 ### deploy.sh Ne Yapar?
-1. main branch kontrolü yapar (başka branch'te çalışmaz)
-2. git pull (son kodu çeker)
-3. docker compose build (image'ları yeniden build eder)
-4. docker compose up -d (container'ları yeniden başlatır)
-5. prisma migrate deploy (yeni migration varsa çalıştırır)
-6. eski image'ları temizler
+1. .env.prod kontrolü yapar (yoksa çıkar)
+2. Swap kontrolü (yoksa 2GB ekler)
+3. git pull origin main (son kodu çeker)
+4. docker compose down (container'ları durdurur)
+5. docker compose build (cache kullanarak image'ları derler)
+6. docker compose up -d (container'ları başlatır)
+7. prisma db push (schema değişikliklerini uygular)
+8. docker image prune -f (eski image'ları temizler)
 
 ### Sık Kullanılan Komutlar
 

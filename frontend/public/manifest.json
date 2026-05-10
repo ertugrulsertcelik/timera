@@ -2,7 +2,7 @@
   "name": "Timera",
   "short_name": "Timera",
   "description": "Yarım saatlik blok tabanlı zaman takip uygulaması",
-  "theme_color": "#F4631E",
+  "theme_color": "#2563EB",
   "background_color": "#FAFAFA",
   "display": "standalone",
   "start_url": "/",

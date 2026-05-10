@@ -8,7 +8,7 @@ import { LeaveRequest, LeaveBalance } from "../types";
 const T = {
   bg: "#F5F6FA", surface: "#FFFFFF", border: "#E5E7EB",
   text: "#111827", text2: "#4B5563", muted: "#9CA3AF",
-  orange: "#F4631E", orangeL: "#FFF0EB",
+  orange: "#2563EB", orangeL: "#EFF6FF",
   green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
   blue: "#1565C0", blueL: "#EFF6FF", blueB: "#BFDBFE",
   red: "#991B1B", redL: "#FEF2F2", redB: "#FECACA",
@@ -48,7 +48,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
     <div className="fixed inset-0 z-50 flex items-center justify-center"
       style={{ background: "rgba(0,0,0,0.3)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="rounded-2xl shadow-xl" style={{ background: T.surface, border: `1px solid ${T.border}`, width: 440, maxHeight: "90vh", overflow: "auto" }}>
+      <div className="rounded-2xl shadow-xl" style={{ background: T.surface, border: `1px solid ${T.border}`, width: "min(440px, 95vw)", maxHeight: "90vh", overflow: "auto" }}>
         <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${T.border}` }}>
           <h2 className="font-semibold text-sm" style={{ color: T.text }}>{title}</h2>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 18 }}>
@@ -325,7 +325,7 @@ export function LeavePage() {
 
       <div className="flex flex-col flex-1 min-w-0">
         {/* Topbar */}
-        <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0"
+        <header className="flex items-center justify-between px-4 md:px-6 py-3.5 flex-shrink-0"
           style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold" style={{ color: T.text }}>İzin Takibi</span>
@@ -346,7 +346,7 @@ export function LeavePage() {
           </button>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 pt-4 md:pt-5 pb-20 md:pb-5">
 
           {/* Balance Cards */}
           {balance && (
@@ -570,7 +570,7 @@ export function LeavePage() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-xl text-xs font-semibold z-50"
+        <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-xl text-xs font-semibold z-50"
           style={{ background: T.surface, border: `1px solid ${T.border}`, color: T.text, boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}>
           {toast}
         </div>

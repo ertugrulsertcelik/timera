@@ -6,7 +6,12 @@
       "Bash(npx prisma:*)",
       "Bash(python3:*)",
       "Bash(node:*)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "Bash(npm run *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(xargs sed *)"
     ]
   }
 }

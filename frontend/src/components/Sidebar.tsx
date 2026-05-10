@@ -5,10 +5,10 @@ const surface = "#FFFFFF";
 const border  = "#E5E7EB";
 const text2   = "#4B5563";
 const muted   = "#9CA3AF";
-const orange  = "#F4631E";
-const orangeL = "#FFF0EB";
-const red     = "#E8302A";
-const amber   = "#F9A825";
+const orange  = "#2563EB";
+const orangeL = "#EFF6FF";
+const red     = "#1D4ED8";
+const amber   = "#0EA5E9";
 
 const NAV_ITEMS = [
   { icon: "ti-calendar-week", label: "Bu Hafta",     path: "/" },
@@ -91,28 +91,26 @@ export function Sidebar({ pendingCount = 0, gamification }: SidebarProps) {
     >
       {/* Logo / Kullanıcı */}
       <div style={{
-        background: "linear-gradient(135deg, #F4631E 0%, #E8302A 100%)",
-        padding: "18px 20px",
+        background: surface,
+        padding: "16px 20px",
+        borderBottom: `1px solid ${border}`,
         flexShrink: 0,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-          <div style={{
-            width: 34, height: 34, borderRadius: 10, flexShrink: 0,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            background: "rgba(255,255,255,0.2)", border: "1px solid rgba(255,255,255,0.28)",
-          }}>
-            <i className="ti ti-clock" style={{ fontSize: 16, color: "white" }} />
-          </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+          <img src="/logo.png" alt="Timera"
+            style={{ width: 30, height: 30, objectFit: "contain", flexShrink: 0 }} />
           <div>
-            <p style={{ margin: 0, color: "white", fontWeight: 900, fontSize: 11, letterSpacing: "0.12em" }}>
-              TIMERA
+            <p style={{ margin: 0, color: "#1e2d4a", fontWeight: 700, fontSize: 15, letterSpacing: "0.01em" }}>
+              timera
             </p>
-            <p style={{ margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 10 }}>Timesheet</p>
+            <p style={{ margin: 0, color: muted, fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>
+              Timesheet
+            </p>
           </div>
         </div>
         <p style={{
           margin: 0, fontSize: 12, fontWeight: 500,
-          color: "rgba(255,255,255,0.85)",
+          color: text2,
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
         }}>
           {user?.name}
@@ -195,6 +193,18 @@ export function Sidebar({ pendingCount = 0, gamification }: SidebarProps) {
         <i className="ti ti-logout text-sm" />
         Çıkış Yap
       </button>
+
+      {/* Geliştirici notu */}
+      <p style={{
+        padding: "6px 0 8px",
+        textAlign: "center",
+        fontSize: 10,
+        color: "#D1D5DB",
+        letterSpacing: "0.02em",
+        flexShrink: 0,
+      }}>
+        v1.1.0 · Ertuğrul Sertçelik
+      </p>
     </aside>
   );
 }

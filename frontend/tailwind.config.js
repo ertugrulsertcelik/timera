@@ -9,16 +9,14 @@ export default {
       },
       colors: {
         brand: {
-          orange:  "#F4631E",
-          red:     "#E8302A",
-          amber:   "#F9A825",
-          pink:    "#C2185B",
-          purple:  "#7B1FA2",
+          primary: "#2563EB",
+          dark:    "#1e2d4a",
+          light:   "#EFF6FF",
         },
       },
       boxShadow: {
-        card: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
-        modal: "0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08)",
+        card:    "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
+        modal:   "0 20px 60px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.08)",
         popover: "0 10px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)",
       },
     },

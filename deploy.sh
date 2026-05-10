@@ -3,13 +3,14 @@ set -euo pipefail
 
 # ── Timera Production Deploy Script ─────────────────────────────────────────
 
+# 1. .env.prod kontrolü
 if [ ! -f ".env.prod" ]; then
   echo "HATA: .env.prod dosyası bulunamadı. .env.prod.example'dan kopyalayın:"
   echo "  cp .env.prod.example .env.prod && vi .env.prod"
   exit 1
 fi
 
-# ── Swap kontrolü (1GB RAM için 2GB swap önerilir) ───────────────────────────
+# 2. Swap kontrolü (1GB RAM için 2GB swap önerilir)
 if [ "$(swapon -s | wc -l)" -lt 2 ]; then
   echo "▶ Swap bulunamadı, 2GB swap ekleniyor..."
   sudo fallocate -l 2G /swapfile
@@ -22,19 +23,28 @@ else
   echo "✓ Swap zaten aktif, atlanıyor."
 fi
 
+# 3. Son kodu çek
+echo "▶ Son kod çekiliyor (git pull)..."
+git pull origin main
+
+# 4. Mevcut container'ları durdur
 echo "▶ Mevcut container'lar durduruluyor..."
 docker compose -f docker-compose.prod.yml --env-file .env.prod down
 
-echo "▶ Image'lar yeniden derleniyor..."
-docker compose -f docker-compose.prod.yml --env-file .env.prod build --no-cache
+# 5. Image'ları derle (cache kullanılır)
+echo "▶ Image'lar derleniyor..."
+docker compose -f docker-compose.prod.yml --env-file .env.prod build
 
+# 6. Container'ları başlat
 echo "▶ Container'lar başlatılıyor..."
 docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
 
+# 7. Prisma migration
 echo "▶ Prisma migration çalıştırılıyor..."
 docker compose -f docker-compose.prod.yml --env-file .env.prod exec backend \
   npx prisma db push --schema src/prisma/schema.prisma --accept-data-loss
 
+# 8. Kullanılmayan image'ları temizle
 echo "▶ Kullanılmayan image'lar temizleniyor..."
 docker image prune -f
 

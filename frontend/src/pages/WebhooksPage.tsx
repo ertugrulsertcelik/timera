@@ -7,8 +7,8 @@ import { api } from "../api/client";
 const T = {
   bg: "#F5F6FA", surface: "#FFFFFF", border: "#E5E7EB",
   text: "#111827", text2: "#4B5563", muted: "#9CA3AF",
-  orange: "#F4631E", orangeL: "#FFF0EB",
-  red: "#E8302A", redL: "#FEF2F2",
+  orange: "#2563EB", orangeL: "#EFF6FF",
+  red: "#1D4ED8", redL: "#FEF2F2",
   green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
 };
 

@@ -18,7 +18,7 @@ const IDLE_MS = 15 * 60 * 1000;
 
 const T = {
   border: "#E5E7EB", bg: "#F5F6FA", text: "#111827", text2: "#4B5563",
-  muted: "#9CA3AF", orange: "#F4631E", red: "#E8302A",
+  muted: "#9CA3AF", orange: "#2563EB", red: "#1D4ED8",
 };
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
@@ -83,7 +83,7 @@ function SetInitialPasswordModal({ onDone }: { onDone: () => void }) {
       }}>
         <div style={{ marginBottom: 20 }}>
           <div style={{
-            width: 44, height: 44, borderRadius: 12, background: "#FFF0EB",
+            width: 44, height: 44, borderRadius: 12, background: "#EFF6FF",
             display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14,
           }}>
             <i className="ti ti-lock" style={{ fontSize: 22, color: T.orange }} />
@@ -202,11 +202,11 @@ function MobileTabBar() {
                 padding: "8px 0", minHeight: 56,
               }}>
               <div style={{ position: "relative" }}>
-                <i className={`ti ${tab.icon}`} style={{ fontSize: 22, color: active ? "#F4631E" : "#9CA3AF" }} />
+                <i className={`ti ${tab.icon}`} style={{ fontSize: 22, color: active ? "#2563EB" : "#9CA3AF" }} />
                 {tab.badge != null && tab.badge > 0 && (
                   <span style={{
                     position: "absolute", top: -4, right: -7,
-                    background: "#F4631E", color: "white",
+                    background: "#2563EB", color: "white",
                     fontSize: 9, fontWeight: 700, lineHeight: 1,
                     padding: "2px 4px", borderRadius: 99, minWidth: 14, textAlign: "center",
                   }}>
@@ -214,7 +214,7 @@ function MobileTabBar() {
                   </span>
                 )}
               </div>
-              <span style={{ fontSize: 10, color: active ? "#F4631E" : "#9CA3AF", fontWeight: active ? 600 : 400 }}>
+              <span style={{ fontSize: 10, color: active ? "#2563EB" : "#9CA3AF", fontWeight: active ? 600 : 400 }}>
                 {tab.label}
               </span>
             </button>

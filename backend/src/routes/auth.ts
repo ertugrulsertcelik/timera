@@ -6,8 +6,8 @@ import { prisma } from "../lib/prisma";
 
 const router = Router();
 
-const MAX_ATTEMPTS = 5;
-const LOCK_MINUTES = 15;
+const MAX_ATTEMPTS = 8;
+const LOCK_MINUTES = 10;
 
 const loginSchema = z.object({
   email: z.string().email("Geçersiz e-posta adresi"),

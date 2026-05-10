@@ -60,10 +60,10 @@ const T = {
   text: "#111827",
   text2: "#4B5563",
   muted: "#9CA3AF",
-  orange: "#F4631E",
-  orangeL: "#FFF0EB",
-  red: "#E8302A",
-  amber: "#F9A825",
+  orange: "#2563EB",
+  orangeL: "#EFF6FF",
+  red: "#1D4ED8",
+  amber: "#0EA5E9",
   green: "#16A34A",
 };
 
@@ -191,7 +191,7 @@ function BlockModal({ startSlot, endSlot, projects, onSave, onClose, saving, err
               background: saving || !projectId ? T.border : `linear-gradient(135deg, ${T.orange}, ${T.red})`,
               color: saving || !projectId ? T.muted : "white",
               border: "none", cursor: saving || !projectId ? "not-allowed" : "pointer",
-              boxShadow: saving || !projectId ? "none" : "0 4px 12px rgba(244,99,30,0.3)",
+              boxShadow: saving || !projectId ? "none" : "0 4px 12px rgba(37,99,235,0.3)",
             }}>
             {saving ? <span className="flex items-center justify-center gap-1.5"><i className="ti ti-loader-2 animate-spin" /> Kaydediliyor...</span> : "Kaydet"}
           </button>
@@ -324,7 +324,7 @@ function EditEntryModal({ entry, projects, onSave, onClose, saving, error, isMob
               background: saving || !projectId ? T.border : `linear-gradient(135deg, ${T.orange}, ${T.red})`,
               color: saving || !projectId ? T.muted : "white",
               border: "none", cursor: saving || !projectId ? "not-allowed" : "pointer",
-              boxShadow: saving || !projectId ? "none" : "0 4px 12px rgba(244,99,30,0.3)",
+              boxShadow: saving || !projectId ? "none" : "0 4px 12px rgba(37,99,235,0.3)",
             }}>
             {saving ? <span className="flex items-center justify-center gap-1.5"><i className="ti ti-loader-2 animate-spin" /> Kaydediliyor...</span> : "Kaydet"}
           </button>

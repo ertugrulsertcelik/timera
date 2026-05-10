@@ -9,8 +9,8 @@ import { api } from "../api/client";
 const T = {
   bg: "#F5F6FA", surface: "#FFFFFF", border: "#E5E7EB",
   text: "#111827", text2: "#4B5563", muted: "#9CA3AF",
-  orange: "#F4631E", orangeL: "#FFF0EB",
-  red: "#E8302A",
+  orange: "#2563EB", orangeL: "#EFF6FF",
+  red: "#1D4ED8",
   green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
   purple: "#7B1FA2", purpleL: "#F3E8FF",
   amber: "#92400E", amberL: "#FEF3C7",
@@ -33,7 +33,7 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
     <div className="fixed inset-0 z-50 flex items-center justify-center"
       style={{ background: "rgba(0,0,0,0.25)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="rounded-2xl shadow-xl" style={{ background: T.surface, border: `1px solid ${T.border}`, width: 440, maxHeight: "90vh", overflow: "auto" }}>
+      <div className="rounded-2xl shadow-xl" style={{ background: T.surface, border: `1px solid ${T.border}`, width: "min(440px, 95vw)", maxHeight: "90vh", overflow: "auto" }}>
         <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: `1px solid ${T.border}` }}>
           <h2 className="font-semibold text-sm" style={{ color: T.text }}>{title}</h2>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: T.muted, fontSize: 18 }}>
@@ -180,7 +180,7 @@ export function UsersPage() {
 
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="px-8 py-5 flex-shrink-0" style={{ background: T.surface, borderBottom: `1px solid ${T.border}` }}>
+        <div className="px-4 md:px-8 py-5 flex-shrink-0" style={{ background: T.surface, borderBottom: `1px solid ${T.border}` }}>
           <div className="flex items-center justify-between">
             <div>
               <h1 className="font-bold text-lg" style={{ color: T.text }}>Kullanıcı Yönetimi</h1>
@@ -196,13 +196,13 @@ export function UsersPage() {
               onMouseLeave={(e) => (e.currentTarget.style.background = T.orange)}
             >
               <i className="ti ti-user-plus" />
-              Yeni Kullanıcı
+              <span className="hidden sm:inline"> Yeni Kullanıcı</span>
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto px-8 py-6">
+        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-4 md:py-6 pb-20 md:pb-6">
           {loading ? (
             <div className="flex items-center justify-center h-40">
               <p style={{ color: T.muted, fontSize: 13 }}>Yükleniyor...</p>
@@ -212,12 +212,14 @@ export function UsersPage() {
               <p style={{ color: T.red, fontSize: 13 }}>{error}</p>
             </div>
           ) : (
-            <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${T.border}`, background: T.surface }}>
+            <div className="overflow-x-auto rounded-xl" style={{ border: `1px solid ${T.border}` }}>
+            <div className="rounded-xl overflow-hidden" style={{ background: T.surface, minWidth: 520 }}>
               <table className="w-full" style={{ borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ background: T.bg, borderBottom: `1px solid ${T.border}` }}>
-                    {["Kullanıcı", "E-posta", "Rol", "Durum", "İşlemler"].map((h) => (
-                      <th key={h} className="text-left px-5 py-3 text-xs font-semibold"
+                    {(["Kullanıcı", "E-posta", "Rol", "Durum", "İşlemler"] as const).map((h, i) => (
+                      <th key={h}
+                        className={`text-left px-5 py-3 text-xs font-semibold${i === 1 ? " hidden md:table-cell" : ""}`}
                         style={{ color: T.muted, textTransform: "uppercase", letterSpacing: "0.06em" }}>
                         {h}
                       </th>
@@ -238,7 +240,7 @@ export function UsersPage() {
                         </div>
                       </td>
                       {/* Email */}
-                      <td className="px-5 py-3.5 text-sm" style={{ color: T.text2 }}>{u.email}</td>
+                      <td className="px-5 py-3.5 text-sm hidden md:table-cell" style={{ color: T.text2 }}>{u.email}</td>
                       {/* Rol */}
                       <td className="px-5 py-3.5">
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-medium"
@@ -266,7 +268,7 @@ export function UsersPage() {
                             onMouseEnter={(e) => { e.currentTarget.style.background = T.orangeL; e.currentTarget.style.color = T.orange; }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = T.bg; e.currentTarget.style.color = T.text2; }}
                           >
-                            <i className="ti ti-pencil" /> Düzenle
+                            <i className="ti ti-pencil" /><span className="hidden sm:inline"> Düzenle</span>
                           </button>
                           <button onClick={() => openReset(u)}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
@@ -274,7 +276,7 @@ export function UsersPage() {
                             onMouseEnter={(e) => { e.currentTarget.style.background = T.amberL; e.currentTarget.style.color = T.amber; }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = T.bg; e.currentTarget.style.color = T.text2; }}
                           >
-                            <i className="ti ti-key" /> Şifre
+                            <i className="ti ti-key" /><span className="hidden sm:inline"> Şifre</span>
                           </button>
                           <button onClick={() => handleToggleActive(u)}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
@@ -285,7 +287,7 @@ export function UsersPage() {
                               cursor: "pointer",
                             }}>
                             <i className={`ti ${u.isActive ? "ti-user-off" : "ti-user-check"}`} />
-                            {u.isActive ? "Pasife Al" : "Aktive Et"}
+                            <span className="hidden sm:inline">{u.isActive ? " Pasife Al" : " Aktive Et"}</span>
                           </button>
                           <button onClick={() => handleDelete(u)}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
@@ -293,7 +295,7 @@ export function UsersPage() {
                             onMouseEnter={(e) => { e.currentTarget.style.background = "#FEE2E2"; }}
                             onMouseLeave={(e) => { e.currentTarget.style.background = "#FEF2F2"; }}
                           >
-                            <i className="ti ti-trash" /> Sil
+                            <i className="ti ti-trash" /><span className="hidden sm:inline"> Sil</span>
                           </button>
                         </div>
                       </td>
@@ -307,6 +309,7 @@ export function UsersPage() {
                   <p className="text-sm mt-2" style={{ color: T.muted }}>Henüz kullanıcı yok</p>
                 </div>
               )}
+            </div>
             </div>
           )}
         </div>
@@ -407,7 +410,7 @@ export function UsersPage() {
             </button>
             <button onClick={handleResetPassword} disabled={saving}
               className="px-4 py-2 rounded-lg text-sm font-semibold"
-              style={{ background: "#F9A825", color: "white", border: "none", cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.7 : 1 }}>
+              style={{ background: "#0EA5E9", color: "white", border: "none", cursor: saving ? "not-allowed" : "pointer", opacity: saving ? 0.7 : 1 }}>
               {saving ? "Sıfırlanıyor..." : "Şifreyi Sıfırla"}
             </button>
           </div>

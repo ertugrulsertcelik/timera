@@ -8,7 +8,7 @@ import { api } from "../api/client";
 const T = {
   bg: "#F5F6FA", surface: "#FFFFFF", border: "#E5E7EB",
   text: "#111827", text2: "#4B5563", muted: "#9CA3AF",
-  orange: "#F4631E", orangeL: "#FFF0EB",
+  orange: "#2563EB", orangeL: "#EFF6FF",
 };
 
 // ─── Tipler ───────────────────────────────────────────────────────────────────
@@ -23,7 +23,7 @@ interface LeaderboardEntry {
 // ─── Sabitler ─────────────────────────────────────────────────────────────────
 
 // altın, gümüş, bronz
-const RANK_COLORS = ["#F9A825", "#9E9E9E", "#8D6E63"];
+const RANK_COLORS = ["#0EA5E9", "#9E9E9E", "#8D6E63"];
 const RANK_BG = ["#FFFDE7", "#F5F5F5", "#EFEBE9"];
 const RANK_BORDER = ["#FDE68A", "#E0E0E0", "#D7CCC8"];
 const RANK_ICONS = ["ti-crown", "ti-medal", "ti-award"];
@@ -36,8 +36,8 @@ function initials(name: string) {
 }
 
 const AVATAR_COLORS = [
-  "#F4631E", "#7B1FA2", "#1565C0", "#00695C",
-  "#C2185B", "#E65100", "#4A148C", "#1A237E",
+  "#2563EB", "#7B1FA2", "#1565C0", "#00695C",
+  "#0284C7", "#E65100", "#4A148C", "#1A237E",
 ];
 function avatarColor(name: string) {
   let h = 0;
@@ -133,7 +133,7 @@ export function LeaderboardPage() {
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Topbar */}
-        <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0"
+        <header className="flex items-center justify-between px-4 md:px-6 py-3.5 flex-shrink-0"
           style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold" style={{ color: T.text }}>Ekip Sıralaması</span>
@@ -146,7 +146,7 @@ export function LeaderboardPage() {
           </div>
           {myEntry && (
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
-              style={{ background: T.orangeL, border: `1px solid rgba(244,99,30,0.2)` }}>
+              style={{ background: T.orangeL, border: `1px solid rgba(37,99,235,0.2)` }}>
               <i className="ti ti-user text-xs" style={{ color: T.orange }} />
               <span className="text-xs font-medium" style={{ color: T.text2 }}>Sıran:</span>
               <span className="text-xs font-bold" style={{ color: T.orange, fontFamily: "DM Mono, monospace" }}>
@@ -160,7 +160,7 @@ export function LeaderboardPage() {
           )}
         </header>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 pt-4 md:pt-5 pb-20 md:pb-5">
 
           {loading && (
             <div className="flex items-center justify-center py-20">
@@ -173,7 +173,7 @@ export function LeaderboardPage() {
           {!loading && entries.length === 0 && (
             <div className="flex flex-col items-center justify-center py-24">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-                style={{ background: T.orangeL, border: `1px solid rgba(244,99,30,0.2)` }}>
+                style={{ background: T.orangeL, border: `1px solid rgba(37,99,235,0.2)` }}>
                 <i className="ti ti-trophy-off" style={{ fontSize: 28, color: T.orange }} />
               </div>
               <p className="text-sm font-semibold mb-1" style={{ color: T.text }}>Henüz sıralama yok</p>
@@ -193,8 +193,9 @@ export function LeaderboardPage() {
               )}
 
               {/* ── Sıralama tablosu ────────────────────────────────────── */}
+              <div className="overflow-x-auto">
               <div className="rounded-xl overflow-hidden"
-                style={{ border: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+                style={{ border: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", minWidth: 520 }}>
 
                 {/* Başlık */}
                 <div className="grid px-4 py-3 text-xs font-semibold"
@@ -296,9 +297,9 @@ export function LeaderboardPage() {
                       <div className="flex items-center justify-end gap-1">
                         {entry.streak > 0 ? (
                           <>
-                            <i className="ti ti-flame text-xs" style={{ color: "#F9A825" }} />
+                            <i className="ti ti-flame text-xs" style={{ color: "#0EA5E9" }} />
                             <span className="text-xs font-bold"
-                              style={{ color: "#F9A825", fontFamily: "DM Mono, monospace" }}>
+                              style={{ color: "#0EA5E9", fontFamily: "DM Mono, monospace" }}>
                               {entry.streak}g
                             </span>
                           </>
@@ -309,6 +310,7 @@ export function LeaderboardPage() {
                     </div>
                   );
                 })}
+              </div>
               </div>
 
               {entries.length < 20 && (

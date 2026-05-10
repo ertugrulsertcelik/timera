@@ -10,7 +10,7 @@ import { Project } from "../types";
 const T = {
   bg: "#F5F6FA", surface: "#FFFFFF", border: "#E5E7EB",
   text: "#111827", text2: "#4B5563", muted: "#9CA3AF",
-  orange: "#F4631E", orangeL: "#FFF0EB",
+  orange: "#2563EB", orangeL: "#EFF6FF",
   green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
   red: "#991B1B", redL: "#FEF2F2", redB: "#FECACA",
 };
@@ -18,7 +18,7 @@ const T = {
 // ─── Renk paleti ──────────────────────────────────────────────────────────────
 
 const PALETTE = [
-  "#F4631E", "#E8302A", "#F9A825", "#C2185B",
+  "#2563EB", "#1D4ED8", "#0EA5E9", "#0284C7",
   "#7B1FA2", "#1565C0", "#00695C", "#E65100",
   "#5DCAA5", "#60A5FA", "#F472B6", "#FBBF24",
 ];
@@ -94,7 +94,7 @@ function ColorPicker({ value, onChange }: ColorPickerProps) {
           <i className="ti ti-color-swatch text-sm" style={{ color: T.muted }} />
           <input
             type="color"
-            value={isValidHex(raw) ? raw : "#F4631E"}
+            value={isValidHex(raw) ? raw : "#2563EB"}
             onChange={(e) => { onChange(e.target.value.toUpperCase()); setRaw(e.target.value.toUpperCase()); }}
             className="sr-only"
           />
@@ -116,7 +116,7 @@ interface ProjectModalProps {
 
 function ProjectModal({ initial, onSave, onClose, saving, error }: ProjectModalProps) {
   const [name, setName]   = useState(initial?.name ?? "");
-  const [color, setColor] = useState(initial?.color ?? "#F4631E");
+  const [color, setColor] = useState(initial?.color ?? "#2563EB");
   const [desc, setDesc]   = useState(initial?.description ?? "");
 
   const isEdit  = !!initial;
@@ -205,11 +205,11 @@ function ProjectModal({ initial, onSave, onClose, saving, error }: ProjectModalP
             disabled={!canSave || saving}
             className="flex-1 py-2.5 rounded-xl text-xs font-bold"
             style={{
-              background: (!canSave || saving) ? "#F3F4F6" : "linear-gradient(135deg, #F4631E, #E8302A)",
+              background: (!canSave || saving) ? "#F3F4F6" : "linear-gradient(135deg, #2563EB, #1D4ED8)",
               border: "none",
               color: (!canSave || saving) ? T.muted : "white",
               cursor: (!canSave || saving) ? "not-allowed" : "pointer",
-              boxShadow: (!canSave || saving) ? "none" : "0 4px 12px rgba(244,99,30,0.3)",
+              boxShadow: (!canSave || saving) ? "none" : "0 4px 12px rgba(37,99,235,0.3)",
             }}>
             {saving ? "Kaydediliyor..." : isEdit ? "Kaydet" : "Oluştur"}
           </button>
@@ -241,7 +241,7 @@ function DeactivateConfirm({ project, onConfirm, onClose, loading }: DeactivateC
       }}>
         <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
           style={{ background: T.redL, border: `1px solid ${T.redB}` }}>
-          <i className="ti ti-power-off" style={{ fontSize: 22, color: "#E8302A" }} />
+          <i className="ti ti-power-off" style={{ fontSize: 22, color: "#1D4ED8" }} />
         </div>
         <h3 className="font-bold text-sm mb-1.5" style={{ color: T.text }}>Projeyi Pasife Al</h3>
         <p className="text-xs mb-5" style={{ color: T.text2, lineHeight: 1.6 }}>
@@ -386,7 +386,7 @@ export function ProjectsPage() {
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Topbar */}
-        <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0"
+        <header className="flex items-center justify-between px-4 md:px-6 py-3.5 flex-shrink-0"
           style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold" style={{ color: T.text }}>Projeler</span>
@@ -414,20 +414,20 @@ export function ProjectsPage() {
             <button onClick={openCreate}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
               style={{
-                background: "linear-gradient(135deg, #F4631E, #E8302A)",
+                background: "linear-gradient(135deg, #2563EB, #1D4ED8)",
                 border: "none", color: "white", cursor: "pointer",
-                boxShadow: "0 2px 8px rgba(244,99,30,0.35)",
+                boxShadow: "0 2px 8px rgba(37,99,235,0.35)",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(244,99,30,0.45)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 2px 8px rgba(244,99,30,0.35)"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "0 4px 14px rgba(37,99,235,0.45)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "0 2px 8px rgba(37,99,235,0.35)"; }}
             >
               <i className="ti ti-plus text-sm" />
-              Yeni Proje
+              <span className="hidden sm:inline">Yeni Proje</span>
             </button>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 pt-4 md:pt-5 pb-20 md:pb-5">
 
           {loading && (
             <div className="flex items-center justify-center py-20">
@@ -440,7 +440,7 @@ export function ProjectsPage() {
           {!loading && displayed.length === 0 && (
             <div className="flex flex-col items-center justify-center py-24">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-                style={{ background: T.orangeL, border: `1px solid rgba(244,99,30,0.2)` }}>
+                style={{ background: T.orangeL, border: `1px solid rgba(37,99,235,0.2)` }}>
                 <i className="ti ti-folder-off" style={{ fontSize: 28, color: T.orange }} />
               </div>
               <p className="text-sm font-semibold mb-1" style={{ color: T.text }}>
@@ -457,8 +457,9 @@ export function ProjectsPage() {
 
           {/* Proje tablosu */}
           {!loading && displayed.length > 0 && (
+            <div className="overflow-x-auto">
             <div className="rounded-xl overflow-hidden"
-              style={{ border: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+              style={{ border: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)", minWidth: 460 }}>
               {/* Başlık */}
               <div className="grid px-4 py-3" style={{
                 gridTemplateColumns: "2fr 3fr 90px 110px",
@@ -543,7 +544,7 @@ export function ProjectsPage() {
                             background: "transparent", border: `1px solid ${T.border}`,
                             color: busy ? T.border : T.muted, cursor: busy ? "not-allowed" : "pointer",
                           }}
-                          onMouseEnter={(e) => { if (!busy) { e.currentTarget.style.borderColor = T.redB; e.currentTarget.style.color = "#E8302A"; e.currentTarget.style.background = T.redL; } }}
+                          onMouseEnter={(e) => { if (!busy) { e.currentTarget.style.borderColor = T.redB; e.currentTarget.style.color = "#1D4ED8"; e.currentTarget.style.background = T.redL; } }}
                           onMouseLeave={(e) => { if (!busy) { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.muted; e.currentTarget.style.background = "transparent"; } }}
                           title="Pasife al"
                         >
@@ -568,6 +569,7 @@ export function ProjectsPage() {
                   </div>
                 );
               })}
+            </div>
             </div>
           )}
         </div>
@@ -595,7 +597,7 @@ export function ProjectsPage() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-xl text-xs font-semibold z-50"
+        <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-xl text-xs font-semibold z-50"
           style={{
             background: T.surface, border: `1px solid ${T.border}`,
             color: T.text, boxShadow: "0 8px 32px rgba(0,0,0,0.12)",

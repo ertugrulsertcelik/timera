@@ -13,7 +13,7 @@ import { api } from "../api/client";
 const T = {
   bg: "#F5F6FA", surface: "#FFFFFF", border: "#E5E7EB",
   text: "#111827", text2: "#4B5563", muted: "#9CA3AF",
-  orange: "#F4631E", orangeL: "#FFF0EB",
+  orange: "#2563EB", orangeL: "#EFF6FF",
   green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
 };
 
@@ -35,8 +35,8 @@ interface SummaryRow {
 const BASE = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const USER_COLORS = [
-  "#F4631E", "#7B1FA2", "#1565C0", "#16A34A",
-  "#C2185B", "#E65100", "#0277BD", "#558B2F",
+  "#2563EB", "#7B1FA2", "#1565C0", "#16A34A",
+  "#0284C7", "#E65100", "#0277BD", "#558B2F",
 ];
 
 const MONTH_NAMES = [
@@ -230,7 +230,7 @@ export function ReportsPage() {
       <div className="flex flex-col flex-1 min-w-0">
 
         {/* Topbar */}
-        <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0 gap-4"
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between px-4 md:px-6 py-3 flex-shrink-0 gap-2"
           style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
 
           {/* Sol: başlık + ay seçici */}
@@ -263,8 +263,8 @@ export function ReportsPage() {
             )}
           </div>
 
-          {/* Sağ: Excel export */}
-          <div className="flex items-center gap-2">
+          {/* Sağ: export araçları — mobilde yatay kaydırılabilir */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-0.5 no-scrollbar">
             <span className="text-xs font-medium" style={{ color: T.text2 }}>Hafta:</span>
             <input
               type="week"
@@ -308,7 +308,7 @@ export function ReportsPage() {
               onMouseLeave={(e) => { if (!exporting && exportWeek) e.currentTarget.style.background = T.greenL; }}
             >
               <i className={`ti ${exporting ? "ti-loader-2 animate-spin" : "ti-file-spreadsheet"} text-sm`} />
-              {exporting ? "İndiriliyor..." : "Excel İndir"}
+              <span className="hidden md:inline">{exporting ? "İndiriliyor..." : "Excel İndir"}</span>
             </button>
 
             <button
@@ -316,16 +316,16 @@ export function ReportsPage() {
               disabled={exportingPdfWeekly || !exportWeek}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all"
               style={{
-                background: (exportingPdfWeekly || !exportWeek) ? "#F3F4F6" : "#FFF0EB",
+                background: (exportingPdfWeekly || !exportWeek) ? "#F3F4F6" : "#EFF6FF",
                 border: `1px solid ${(exportingPdfWeekly || !exportWeek) ? T.border : "#FDBA74"}`,
                 color: (exportingPdfWeekly || !exportWeek) ? T.muted : T.orange,
                 cursor: (exportingPdfWeekly || !exportWeek) ? "not-allowed" : "pointer",
               }}
               onMouseEnter={(e) => { if (!exportingPdfWeekly && exportWeek) e.currentTarget.style.background = "#FFE4CE"; }}
-              onMouseLeave={(e) => { if (!exportingPdfWeekly && exportWeek) e.currentTarget.style.background = "#FFF0EB"; }}
+              onMouseLeave={(e) => { if (!exportingPdfWeekly && exportWeek) e.currentTarget.style.background = "#EFF6FF"; }}
             >
               <i className={`ti ${exportingPdfWeekly ? "ti-loader-2 animate-spin" : "ti-file-type-pdf"} text-sm`} />
-              {exportingPdfWeekly ? "İndiriliyor..." : "Haftalık PDF"}
+              <span className="hidden md:inline">{exportingPdfWeekly ? "İndiriliyor..." : "Haftalık PDF"}</span>
             </button>
 
             <button
@@ -342,12 +342,12 @@ export function ReportsPage() {
               onMouseLeave={(e) => { if (!exportingPdfMonthly) e.currentTarget.style.background = "#EFF6FF"; }}
             >
               <i className={`ti ${exportingPdfMonthly ? "ti-loader-2 animate-spin" : "ti-file-type-pdf"} text-sm`} />
-              {exportingPdfMonthly ? "İndiriliyor..." : "Aylık PDF"}
+              <span className="hidden md:inline">{exportingPdfMonthly ? "İndiriliyor..." : "Aylık PDF"}</span>
             </button>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex-1 overflow-y-auto px-4 md:px-6 pt-4 md:pt-5 pb-20 md:pb-5">
 
           {/* ── Efor Grafiği ─────────────────────────────────────────────── */}
           <div className="rounded-xl p-5 mb-5"
@@ -487,7 +487,7 @@ export function ReportsPage() {
 
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-xl text-xs font-semibold z-50"
+        <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-xl text-xs font-semibold z-50"
           style={{
             background: T.surface, border: `1px solid ${T.border}`,
             color: T.text, boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
