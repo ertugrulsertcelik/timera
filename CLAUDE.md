@@ -1,9 +1,4 @@
-# Timesheet — Claude Code Rehberi (v1.2.0)
-
-## Geliştirici
-- **Adı:** Ertuğrul Sertçelik
-- **Versiyon:** v1.2.0
-- **Not:** Tüm ANKASOFT ibareleri kaldırıldı. Uygulama adı TIMERA, geliştirici Ertuğrul Sertçelik.
+# Timesheet — Claude Code Rehberi (v1.1.0)
 
 ## Proje Özeti
 7/24 çalışan ekipler için yarım saatlik blok tabanlı zaman takip uygulaması.
@@ -29,7 +24,7 @@ timesheet/
 │       ├── middleware/
 │       │   ├── auth.ts             # JWT doğrulama, rol kontrolü (requireAuth, requireManager)
 │       │   ├── errorHandler.ts     # Global error handler — Prisma P2002/P2025/P2003 Türkçe mesaj
-│       │   ├── rateLimiter.ts      # loginLimiter (10/5dk), refreshLimiter (30/1dk), apiLimiter (120/1dk)
+│       │   ├── rateLimiter.ts      # loginLimiter (5/3dk), refreshLimiter (20/15dk), apiLimiter (100/15dk)
 │       │   └── trimmer.ts          # req.body tüm string değerlerinde trim()
 │       ├── routes/
 │       │   ├── auth.ts             # POST /auth/login, /refresh, /logout
@@ -169,10 +164,10 @@ WebhookConfig → id, name, type (SLACK|TEAMS), url, events (WebhookEvent[]), is
 ## Güvenlik Katmanı
 
 ### Backend
-- **Rate limiting:** `/auth/login` 10 istek/5dk, `/auth/refresh` 30/1dk, genel API 120/1dk
+- **Rate limiting:** `/auth/login` 5 istek/3dk, `/auth/refresh` 20/15dk, genel API 100/15dk
 - **Helmet:** CSP, X-Frame-Options: DENY, xContentTypeOptions
 - **CORS:** `FRONTEND_URL` origin'lerine izin ver (virgülle ayrılmış çoklu origin desteklenir), credentials: true
-- **Brute-force:** `loginAttempts` + `lockedUntil` (8 hatalı denemede 10dk kilit)
+- **Brute-force:** `loginAttempts` + `lockedUntil` (5 hatalı denemede 15dk kilit)
 - **Timing attack koruması:** kullanıcı bulunamazsa dummy `bcrypt.compare`
 - **Input sanitization:** `trimmer` middleware tüm string input'larda trim()
 - **Refresh token rotation:** `/auth/refresh` eskiyi siler, yenisini döner
@@ -331,25 +326,20 @@ npx ts-node src/prisma/seed.ts
 
 ## Tasarım Sistemi
 
-- **Tema:** Açık (light), Mavi
+- **Tema:** Açık (light)
 - **Ana arka plan:** `#F5F6FA`
 - **Panel/kart:** `#FFFFFF`
 - **Border:** `#E5E7EB` (ince), `#F3F4F6` (çok ince)
-- **Ana renk:** `#2563EB` (mavi/aktif), `#1D4ED8` (koyu mavi/hover), `#1e2d4a` (lacivert/başlıklar)
-- **Açık ton:** `#EFF6FF` (açık mavi bg), `#DBEAFE`, `#BFDBFE`
-- **Streak/gamification rengi:** `#0EA5E9` (sky blue)
+- **Ana renk:** `#F4631E` (turuncu/aktif), `#E8302A` (kırmızı/hover)
 - **Durum renkleri:** Onaylı `#16A34A`, Bekliyor `#92400E`, Reddedildi `#991B1B`, Taslak `#6B7280`
 - **Font:** DM Sans (UI), DM Mono (saat etiketleri)
 - **İkon seti:** Tabler Icons (webfont, `ti-` prefix)
-- **Logo:** `public/logo.png` (40×40 px, object-fit: contain)
-- **CSS değişkenler:** `--color-primary: #2563EB`, `--color-primary-dark: #1D4ED8`, `--color-primary-light: #EFF6FF`
-- **tailwind.config.js:** `brand.primary`, `brand.dark`, `brand.light`
 
 ---
 
 ## Tamamlanan Sayfalar & Özellikler
 
-- [x] `LoginPage` — sol form + sağ özellik paneli (mavi tema), yüzen blob animasyonları, slideInLeft/Right, test hesabı yok
+- [x] `LoginPage` — form, hata yönetimi, test hesabı butonları, yanlış şifrede hata mesajı
 - [x] `WeekPage` — 7 günlük grid (slotH=28/36), masaüstü sürükle-seç + mobil tap-to-select (iki adım, sticky banner, ESC iptal), modal (masaüstü merkez / mobil bottom-sheet slideUp), gece yarısı bölme, stat kartları (2→4 cols responsive), onaya gönder, REJECTED bloklarda red sebebi, izin entegrasyonu
 - [x] `ApprovalsPage` — manager onay ekranı (bekleyen girişleri listele, onayla/reddet, **Tümünü Onayla** — Promise.allSettled)
 - [x] `ProjectsPage` — proje ekle/düzenle/pasife al/sil, renk seçici
@@ -371,7 +361,6 @@ npx ts-node src/prisma/seed.ts
 - [x] Production Docker Compose — `docker-compose.prod.yml`, multi-stage Dockerfile, nginx SPA conf, `.env.prod.example`, `deploy.sh`
 - [x] Güvenlik (production) — nginx HTTPS + HTTP→HTTPS yönlendirme, self-signed SSL (TLS 1.2+1.3), güvenlik header'ları (HSTS/X-Frame/CSP/Referrer), rate limiting (login 5r/m, api 30r/s), non-root Docker user (`timera`), swap bellek, otomatik backup scripti
 - [x] Mobil uyumluluk — tap-to-select, bottom tab bar (MobileTabBar), responsive layout, bottom-sheet modals, input 16px (iOS zoom), min-height 44px butonlar
-- [x] Tüm sayfalarda mobil uyum — padding px-4 md:px-6, pb-20 md:pb-5 (tab bar boşluğu), tablo overflow-x-auto, buton metin hidden sm:inline, toast bottom-20 md:bottom-6, modal width min(440px,95vw)
 - [x] PWA — `manifest.json`, `icon.svg`, 192/512px PNG (librsvg), `theme-color`, `apple-touch-icon`
 
 ## Excel Formatı (exportService.ts)
@@ -550,36 +539,13 @@ chmod +x deploy.sh
 7. Push: git push origin main
 8. Sunucuda deploy: ssh ubuntu@92.5.156.75 → cd timera → ./deploy.sh
 
-### deploy.sh Ne Yapar? (v2 — selective rebuild)
-1. .env.prod kontrolü yapar (yoksa çıkar)
-2. Swap kontrolü (yoksa 2GB ekler)
-3. `git fetch` + `git diff HEAD origin/main` ile hangi dosyaların değiştiğini saptar
-4. `git pull origin main` ile kodu çeker
-5. Değişikliğe göre seçici rebuild:
-   - Sadece `backend/` değiştiyse → yalnızca backend rebuild + up (`--no-deps`)
-   - Sadece `frontend/` değiştiyse → yalnızca frontend rebuild + up (`--no-deps`)
-   - İkisi de değiştiyse → her ikisini rebuild + up
-   - `docker-compose` değiştiyse → full `down` + `build` + `up`
-   - Hiçbir servis değişmediyse → rebuild yok, uyarı verilir
-6. Prisma migration → yalnızca backend veya compose değiştiyse (5sn bekleme ile)
-7. `docker image prune -f` (eski image'ları temizler)
-
-### Deploy Süre Referansı
-| Senaryo | Tahmini Süre |
-|---------|-------------|
-| Sadece frontend değişti | ~2-3 dk |
-| Sadece backend değişti | ~1-2 dk |
-| Backend + Frontend | ~4-5 dk |
-| Full restart (compose değişti) | ~8-10 dk |
-
-### Dockerfile Cache Optimizasyonu
-`backend/Dockerfile.prod` — layer sırası:
-- `package*.json` + `schema.prisma` → `npm ci` → `prisma generate` (bunlar cache'lenir)
-- `COPY src ./src` → `npm run build` (sadece kaynak değişince çalışır)
-
-`frontend/Dockerfile.prod` — layer sırası:
-- `package*.json` → `npm ci` (cache'lenir)
-- `COPY . .` → `npm run build` (sadece kaynak değişince çalışır)
+### deploy.sh Ne Yapar?
+1. main branch kontrolü yapar (başka branch'te çalışmaz)
+2. git pull (son kodu çeker)
+3. docker compose build (image'ları yeniden build eder)
+4. docker compose up -d (container'ları yeniden başlatır)
+5. prisma migrate deploy (yeni migration varsa çalıştırır)
+6. eski image'ları temizler
 
 ### Sık Kullanılan Komutlar
 
@@ -600,7 +566,7 @@ docker compose -f docker-compose.prod.yml --env-file .env.prod exec postgres psq
 docker compose -f docker-compose.prod.yml --env-file .env.prod exec backend npx prisma db push --schema src/prisma/schema.prisma
 
 # Tüm sistemi durdur
-docker compose -f docker-compose.prod.yml --env-file .env.prod down
+  docker compose -f docker-compose.prod.yml --env-file .env.prod down
 
 # Tüm sistemi başlat
 docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
@@ -686,18 +652,6 @@ crontab -e
 ---
 
 ## Versiyon Geçmişi
-
-### v1.2.0
-- UserMenu: Tüm sayfa topbar'larında sağ üst köşeye kullanıcı avatarı (baş harfler) + dropdown (kullanıcı bilgisi, Şifre Değiştir, Çıkış Yap)
-- Sidebar: Çıkış Yap butonu kaldırıldı; Raporlar linki MANAGER-only (Yönetim menüsüne taşındı)
-- Beni hatırla: LoginPage'e checkbox eklendi; false ise refreshToken sessionStorage'a kaydedilir (sekme kapanınca silinir)
-- WeekPage: Hafta navigasyon ok butonları 32×32px, beyaz bg, 1.5px border; buçuk saatler soluk renk ile gösterildi
-- Kaydırma düzeltmeleri: body overflow-x: hidden; ReportsPage filtre paneli scrollable + sticky "Raporu Oluştur" butonu
-- Raporlar sayfası: MANAGER-only route koruması (zaten ManagerRoute ile sarılıydı, Sidebar'dan da gizlendi)
-- Prisma binaryTargets: linux-musl-openssl-3.0.x eklendi (Alpine production ortamı için)
-- deploy.sh v2: selective rebuild — sadece değişen servis rebuild edilir, downtime minimize edilir
-- Dockerfile cache optimizasyonu: package.json + schema önce → npm ci cache'lenir
-- Gelişmiş Rapor Builder: ReportsPage tam yeniden yazım, /reports/advanced, /reports/personal, /reports/export/csv endpoint'leri, ReportSchedule modeli
 
 ### v1.1.0
 - Mobil uyumluluk: WeekPage tap-to-select (iki adımlı seçim, sticky banner, ESC iptal), responsive layout

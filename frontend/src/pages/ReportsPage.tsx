@@ -11,15 +11,15 @@ import { UserMenu } from "../components/UserMenu";
 
 // ── Design Tokens ─────────────────────────────────────────────────────────────
 const T = {
-  bg: "#F5F6FA",
-  surface: "#FFFFFF",
-  border: "#E5E7EB",
-  text: "#111827",
-  text2: "#4B5563",
-  muted: "#9CA3AF",
+  bg: "var(--c-bg)",
+  surface: "var(--c-surface)",
+  border: "var(--c-border)",
+  text: "var(--c-text)",
+  text2: "var(--c-text2)",
+  muted: "var(--c-muted)",
   primary: "#2563EB",
   dark: "#1e2d4a",
-  light: "#EFF6FF",
+  light: "var(--c-orangeL)",
   green: "#16A34A",
   red: "#DC2626",
   amber: "#F59E0B",

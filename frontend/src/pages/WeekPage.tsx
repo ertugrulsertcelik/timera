@@ -54,15 +54,15 @@ const SLOTS = Array.from({ length: 48 }, (_, i) => i);
 // ─── Design tokens ────────────────────────────────────────────────────────────
 
 const T = {
-  bg: "#F5F6FA",
-  surface: "#FFFFFF",
-  border: "#E5E7EB",
-  border2: "#F3F4F6",
-  text: "#111827",
-  text2: "#4B5563",
-  muted: "#9CA3AF",
+  bg: "var(--c-bg)",
+  surface: "var(--c-surface)",
+  border: "var(--c-border)",
+  border2: "var(--c-border2)",
+  text: "var(--c-text)",
+  text2: "var(--c-text2)",
+  muted: "var(--c-muted)",
   orange: "#2563EB",
-  orangeL: "#EFF6FF",
+  orangeL: "var(--c-orangeL)",
   red: "#1D4ED8",
   amber: "#0EA5E9",
   green: "#16A34A",

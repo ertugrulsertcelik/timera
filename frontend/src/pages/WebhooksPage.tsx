@@ -6,9 +6,9 @@ import { useAuthStore } from "../store/authStore";
 import { api } from "../api/client";
 
 const T = {
-  bg: "#F5F6FA", surface: "#FFFFFF", border: "#E5E7EB",
-  text: "#111827", text2: "#4B5563", muted: "#9CA3AF",
-  orange: "#2563EB", orangeL: "#EFF6FF",
+  bg: "var(--c-bg)", surface: "var(--c-surface)", border: "var(--c-border)",
+  text: "var(--c-text)", text2: "var(--c-text2)", muted: "var(--c-muted)",
+  orange: "#2563EB", orangeL: "var(--c-orangeL)",
   red: "#1D4ED8", redL: "#FEF2F2",
   green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
 };

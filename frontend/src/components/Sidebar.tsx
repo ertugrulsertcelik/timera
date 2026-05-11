@@ -2,12 +2,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 // logout moved to UserMenu component
 
-const surface = "#FFFFFF";
-const border  = "#E5E7EB";
-const text2   = "#4B5563";
-const muted   = "#9CA3AF";
+const surface = "var(--c-surface)";
+const border  = "var(--c-border)";
+const text2   = "var(--c-text2)";
+const muted   = "var(--c-muted)";
 const orange  = "#2563EB";
-const orangeL = "#EFF6FF";
+const orangeL = "var(--c-orangeL)";
 const red     = "#1D4ED8";
 const amber   = "#0EA5E9";
 
@@ -99,9 +99,9 @@ export function Sidebar({ pendingCount = 0, gamification }: SidebarProps) {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
           <img src="/logo.png" alt="Timera"
-            style={{ width: 30, height: 30, objectFit: "contain", flexShrink: 0 }} />
+            style={{ width: 38, height: 38, objectFit: "contain", flexShrink: 0 }} />
           <div>
-            <p style={{ margin: 0, color: "#1e2d4a", fontWeight: 700, fontSize: 15, letterSpacing: "0.01em" }}>
+            <p style={{ margin: 0, color: "var(--c-text)", fontWeight: 700, fontSize: 15, letterSpacing: "0.01em" }}>
               timera
             </p>
             <p style={{ margin: 0, color: muted, fontSize: 9, letterSpacing: "0.1em", textTransform: "uppercase" as const }}>
@@ -186,7 +186,7 @@ export function Sidebar({ pendingCount = 0, gamification }: SidebarProps) {
         letterSpacing: "0.02em",
         flexShrink: 0,
       }}>
-        v1.1.0 · Ertuğrul Sertçelik
+        v1.2.0 · Ertuğrul Sertçelik
       </p>
     </aside>
   );

@@ -17,8 +17,8 @@ import { api } from "./api/client";
 const IDLE_MS = 15 * 60 * 1000;
 
 const T = {
-  border: "#E5E7EB", bg: "#F5F6FA", text: "#111827", text2: "#4B5563",
-  muted: "#9CA3AF", orange: "#2563EB", red: "#1D4ED8",
+  border: "var(--c-border)", bg: "var(--c-bg)", text: "var(--c-text)", text2: "var(--c-text2)",
+  muted: "var(--c-muted)", orange: "#2563EB", red: "#1D4ED8",
 };
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
@@ -78,7 +78,7 @@ function SetInitialPasswordModal({ onDone }: { onDone: () => void }) {
       display: "flex", alignItems: "center", justifyContent: "center",
     }}>
       <div style={{
-        background: "#fff", borderRadius: 16, width: 420, padding: "32px 32px 28px",
+        background: "var(--c-surface)", borderRadius: 16, width: 420, padding: "32px 32px 28px",
         boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
       }}>
         <div style={{ marginBottom: 20 }}>
@@ -188,7 +188,7 @@ function MobileTabBar() {
 
   return (
     <div className="md:hidden fixed bottom-0 left-0 right-0 z-40"
-      style={{ background: "#FFFFFF", borderTop: "1px solid #E5E7EB", boxShadow: "0 -2px 8px rgba(0,0,0,0.06)" }}>
+      style={{ background: "var(--c-surface)", borderTop: "1px solid var(--c-border)", boxShadow: "0 -2px 8px rgba(0,0,0,0.06)" }}>
       <div className="flex" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
         {tabs.map((tab) => {
           const active = tab.path !== null && pathname === tab.path;

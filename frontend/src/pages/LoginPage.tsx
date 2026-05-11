@@ -12,17 +12,17 @@ interface BlobShape {
 }
 
 const BLOBS: BlobShape[] = [
-  { w: 200, h: 200, top: "-60px",   left: "-60px",  color: "#2563EB", opacity: 0.10, blur: 60, anim: "float1", dur: "8s",  delay: "0s"   },
-  { w: 150, h: 150, bottom: "-40px", right: "-40px", color: "#0EA5E9", opacity: 0.12, blur: 40, anim: "float2", dur: "6s",  delay: "1s"   },
-  { w: 80,  h: 80,  top: "45%",    left: "10%",     color: "#1D4ED8", opacity: 0.08, blur: 20, anim: "float3", dur: "10s", delay: "2s"   },
-  { w: 120, h: 80,  top: "15%",    right: "8%",     color: "#BFDBFE", opacity: 0.30, blur: 30, anim: "float1", dur: "7s",  delay: "0.5s" },
-  { w: 180, h: 120, bottom: "20%", left: "5%",      color: "#93C5FD", opacity: 0.15, blur: 50, anim: "float2", dur: "9s",  delay: "1.5s" },
+  { w: 200, h: 200, top: "-60px", left: "-60px", color: "#2563EB", opacity: 0.10, blur: 60, anim: "float1", dur: "8s", delay: "0s" },
+  { w: 150, h: 150, bottom: "-40px", right: "-40px", color: "#0EA5E9", opacity: 0.12, blur: 40, anim: "float2", dur: "6s", delay: "1s" },
+  { w: 80, h: 80, top: "45%", left: "10%", color: "#1D4ED8", opacity: 0.08, blur: 20, anim: "float3", dur: "10s", delay: "2s" },
+  { w: 120, h: 80, top: "15%", right: "8%", color: "#BFDBFE", opacity: 0.30, blur: 30, anim: "float1", dur: "7s", delay: "0.5s" },
+  { w: 180, h: 120, bottom: "20%", left: "5%", color: "#93C5FD", opacity: 0.15, blur: 50, anim: "float2", dur: "9s", delay: "1.5s" },
 ];
 
 const FEATURES = [
-  { icon: "ti-clock",            title: "7/24 Zaman Takibi",  desc: "Yarım saatlik bloklar"   },
-  { icon: "ti-trophy",           title: "Gamification",        desc: "XP, rozet ve sıralama"   },
-  { icon: "ti-file-spreadsheet", title: "Raporlar",            desc: "Excel ve PDF export"      },
+  { icon: "ti-clock", title: "7/24 Zaman Takibi", desc: "Yarım saatlik bloklar" },
+  { icon: "ti-trophy", title: "Gamification", desc: "XP, rozet ve sıralama" },
+  { icon: "ti-file-spreadsheet", title: "Raporlar", desc: "Excel ve PDF export" },
 ];
 
 // ─── LoginPage ────────────────────────────────────────────────────────────────
@@ -52,12 +52,12 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex" style={{ background: "#F8FAFF" }}>
+    <div className="min-h-screen flex" style={{ background: "var(--c-bg)" }}>
 
       {/* ── Sol panel: form ─────────────────────────────────────────────────── */}
       <div
-        className="flex-1 flex flex-col bg-white"
-        style={{ animation: "slideInLeft 0.5s ease both" }}
+        className="flex-1 flex flex-col"
+        style={{ background: "var(--c-surface)", animation: "slideInLeft 0.5s ease both" }}
       >
         <div className="flex-1 flex flex-col items-center justify-center px-8 md:px-14 py-10">
           <div className="w-full max-w-sm">
@@ -65,13 +65,13 @@ export function LoginPage() {
             {/* Logo */}
             <div className="flex items-center gap-3 mb-10">
               <img src="/logo.png" alt="Timera"
-                style={{ width: 40, height: 40, objectFit: "contain" }} />
+                style={{ width: 56, height: 56, objectFit: "contain" }} />
               <div>
                 <p className="font-bold leading-none"
-                  style={{ fontSize: 18, color: "#1e2d4a", letterSpacing: "0.01em" }}>
+                  style={{ fontSize: 20, color: "#1e2d4a", letterSpacing: "0.01em" }}>
                   timera
                 </p>
-                <p style={{ fontSize: 9, letterSpacing: "0.12em", color: "#9CA3AF", marginTop: 3, textTransform: "uppercase" }}>
+                <p style={{ fontSize: 10, letterSpacing: "0.12em", color: "#9CA3AF", marginTop: 1, textTransform: "uppercase" }}>
                   Timesheet Made Simple
                 </p>
               </div>
@@ -107,7 +107,7 @@ export function LoginPage() {
                       transition: "border-color 0.2s, background 0.2s",
                     }}
                     onFocus={(e) => { e.target.style.borderColor = "#2563EB"; e.target.style.background = "#FFFFFF"; }}
-                    onBlur={(e)  => { e.target.style.borderColor = "#E5E7EB"; e.target.style.background = "#F9FAFB"; }}
+                    onBlur={(e) => { e.target.style.borderColor = "#E5E7EB"; e.target.style.background = "#F9FAFB"; }}
                   />
                 </div>
               </div>
@@ -133,7 +133,7 @@ export function LoginPage() {
                       transition: "border-color 0.2s, background 0.2s",
                     }}
                     onFocus={(e) => { e.target.style.borderColor = "#2563EB"; e.target.style.background = "#FFFFFF"; }}
-                    onBlur={(e)  => { e.target.style.borderColor = "#E5E7EB"; e.target.style.background = "#F9FAFB"; }}
+                    onBlur={(e) => { e.target.style.borderColor = "#E5E7EB"; e.target.style.background = "#F9FAFB"; }}
                   />
                 </div>
               </div>

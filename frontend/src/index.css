@@ -8,10 +8,40 @@
   --color-primary-light: #EFF6FF;
 }
 
+/* ── Dark mode token'ları ─────────────────────────────────────────────────── */
+html:not([data-theme="dark"]) {
+  --c-bg:       #F5F6FA;
+  --c-surface:  #FFFFFF;
+  --c-surface2: #FAFAFA;
+  --c-border:   #E5E7EB;
+  --c-border2:  #F3F4F6;
+  --c-text:     #111827;
+  --c-text2:    #4B5563;
+  --c-muted:    #9CA3AF;
+  --c-orangeL:  #EFF6FF;
+}
+
+html[data-theme="dark"] {
+  --c-bg:       #0F172A;
+  --c-surface:  #1E293B;
+  --c-surface2: #162032;
+  --c-border:   #334155;
+  --c-border2:  #253347;
+  --c-text:     #F1F5F9;
+  --c-text2:    #94A3B8;
+  --c-muted:    #64748B;
+  --c-orangeL:  #1E3A5F;
+  color-scheme: dark;
+}
+
+html, body {
+  transition: background-color 0.2s, color 0.2s;
+}
+
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
   html { font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-  body { margin: 0; background: #F5F6FA; color: #111827; overflow-x: hidden; }
+  body { margin: 0; background: var(--c-bg); color: var(--c-text); overflow-x: hidden; }
 }
 
 .ti { vertical-align: -2px; }

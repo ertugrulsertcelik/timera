@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+import { useThemeStore } from "../store/themeStore";
 
 export function UserMenu() {
   const { user, logout } = useAuthStore();
+  const { isDark, toggle } = useThemeStore();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -64,6 +66,23 @@ export function UserMenu() {
 
           {/* Menü öğeleri */}
           <div style={{ padding: "6px 0" }}>
+            <button
+              onClick={() => { toggle(); }}
+              style={{
+                width: "100%", padding: "9px 16px",
+                background: "none", border: "none", cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 10,
+                fontSize: 13, color: "#4B5563", textAlign: "left",
+                fontFamily: "inherit",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "#F9FAFB"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "none"; }}
+            >
+              <i className={`ti ${isDark ? "ti-sun" : "ti-moon"}`} style={{ fontSize: 14, color: "#9CA3AF" }} />
+              {isDark ? "Açık Tema" : "Karanlık Tema"}
+            </button>
+            <div style={{ height: 1, background: "#F3F4F6", margin: "4px 0" }} />
+
             <button
               onClick={() => { setOpen(false); navigate("/profile"); }}
               style={{
