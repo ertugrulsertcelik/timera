@@ -19,6 +19,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     const refreshed = await tryRefresh();
     if (refreshed) return request<T>(path, options);
     sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("user");
     window.location.href = "/login";
@@ -33,7 +34,7 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 }
 
 async function tryRefresh(): Promise<boolean> {
-  const rt = localStorage.getItem("refreshToken");
+  const rt = localStorage.getItem("refreshToken") || sessionStorage.getItem("refreshToken");
   if (!rt) return false;
   try {
     const res = await fetch(`${BASE}/auth/refresh`, {

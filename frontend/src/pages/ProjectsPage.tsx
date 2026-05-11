@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { Sidebar } from "../components/Sidebar";
+import { UserMenu } from "../components/UserMenu";
 import { api } from "../api/client";
 import { Project } from "../types";
 
@@ -424,6 +425,7 @@ export function ProjectsPage() {
               <i className="ti ti-plus text-sm" />
               <span className="hidden sm:inline">Yeni Proje</span>
             </button>
+            <UserMenu />
           </div>
         </header>
 

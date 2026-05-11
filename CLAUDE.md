@@ -1,8 +1,8 @@
-# Timesheet — Claude Code Rehberi (v1.1.0)
+# Timesheet — Claude Code Rehberi (v1.2.0)
 
 ## Geliştirici
 - **Adı:** Ertuğrul Sertçelik
-- **Versiyon:** v1.1.0
+- **Versiyon:** v1.2.0
 - **Not:** Tüm ANKASOFT ibareleri kaldırıldı. Uygulama adı TIMERA, geliştirici Ertuğrul Sertçelik.
 
 ## Proje Özeti
@@ -686,6 +686,18 @@ crontab -e
 ---
 
 ## Versiyon Geçmişi
+
+### v1.2.0
+- UserMenu: Tüm sayfa topbar'larında sağ üst köşeye kullanıcı avatarı (baş harfler) + dropdown (kullanıcı bilgisi, Şifre Değiştir, Çıkış Yap)
+- Sidebar: Çıkış Yap butonu kaldırıldı; Raporlar linki MANAGER-only (Yönetim menüsüne taşındı)
+- Beni hatırla: LoginPage'e checkbox eklendi; false ise refreshToken sessionStorage'a kaydedilir (sekme kapanınca silinir)
+- WeekPage: Hafta navigasyon ok butonları 32×32px, beyaz bg, 1.5px border; buçuk saatler soluk renk ile gösterildi
+- Kaydırma düzeltmeleri: body overflow-x: hidden; ReportsPage filtre paneli scrollable + sticky "Raporu Oluştur" butonu
+- Raporlar sayfası: MANAGER-only route koruması (zaten ManagerRoute ile sarılıydı, Sidebar'dan da gizlendi)
+- Prisma binaryTargets: linux-musl-openssl-3.0.x eklendi (Alpine production ortamı için)
+- deploy.sh v2: selective rebuild — sadece değişen servis rebuild edilir, downtime minimize edilir
+- Dockerfile cache optimizasyonu: package.json + schema önce → npm ci cache'lenir
+- Gelişmiş Rapor Builder: ReportsPage tam yeniden yazım, /reports/advanced, /reports/personal, /reports/export/csv endpoint'leri, ReportSchedule modeli
 
 ### v1.1.0
 - Mobil uyumluluk: WeekPage tap-to-select (iki adımlı seçim, sticky banner, ESC iptal), responsive layout

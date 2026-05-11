@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sidebar } from "../components/Sidebar";
+import { UserMenu } from "../components/UserMenu";
 import { useAuthStore } from "../store/authStore";
 import { api } from "../api/client";
 
@@ -182,14 +183,17 @@ export function WebhooksPage() {
         <header className="flex items-center justify-between px-6 py-3.5 flex-shrink-0"
           style={{ background: T.surface, borderBottom: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
           <span className="text-sm font-semibold" style={{ color: T.text }}>Webhook Bildirimleri</span>
-          <button
-            onClick={openCreate}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
-            style={{ background: T.orange, color: "white", border: "none", cursor: "pointer" }}
-          >
-            <i className="ti ti-plus text-sm" />
-            Webhook Ekle
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={openCreate}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold"
+              style={{ background: T.orange, color: "white", border: "none", cursor: "pointer" }}
+            >
+              <i className="ti ti-plus text-sm" />
+              Webhook Ekle
+            </button>
+            <UserMenu />
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto px-6 py-5">

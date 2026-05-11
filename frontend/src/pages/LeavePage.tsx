@@ -1,6 +1,7 @@
 import { useState, useEffect, ReactNode } from "react";
 import { useAuthStore } from "../store/authStore";
 import { Sidebar } from "../components/Sidebar";
+import { UserMenu } from "../components/UserMenu";
 import { api } from "../api/client";
 import { LeaveRequest, LeaveBalance } from "../types";
 
@@ -338,12 +339,15 @@ export function LeavePage() {
               </select>
             )}
           </div>
-          <button onClick={() => { setForm({ date: today, type: "ANNUAL", note: "" }); setShowCreate(true); }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
-            style={{ background: T.orange, color: "white", border: "none", cursor: "pointer" }}>
-            <i className="ti ti-plus text-sm" />
-            Yeni İzin Talebi
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={() => { setForm({ date: today, type: "ANNUAL", note: "" }); setShowCreate(true); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold"
+              style={{ background: T.orange, color: "white", border: "none", cursor: "pointer" }}>
+              <i className="ti ti-plus text-sm" />
+              Yeni İzin Talebi
+            </button>
+            <UserMenu />
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto px-4 md:px-6 pt-4 md:pt-5 pb-20 md:pb-5">

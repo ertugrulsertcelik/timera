@@ -5,6 +5,7 @@ import { useEntries } from "../hooks/useEntries";
 import { api } from "../api/client";
 import { Project, TimeEntry } from "../types";
 import { Sidebar } from "../components/Sidebar";
+import { UserMenu } from "../components/UserMenu";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -518,11 +519,15 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
               paddingRight: isMobile ? 6 : 10, paddingTop: 4,
               borderBottom: `1px solid ${slot % 2 === 0 ? T.border : T.border2}`,
             }}>
-              {slot % 2 === 0 && (
-                <span style={{ fontSize: isMobile ? 9 : 10, color: T.muted, fontFamily: "DM Mono, monospace" }}>
-                  {slotToTime(slot)}
-                </span>
-              )}
+              <span style={{
+                fontSize: slot % 2 === 0 ? (isMobile ? 9 : 10) : (isMobile ? 8 : 9),
+                color: slot % 2 === 0 ? "#6B7280" : "#D1D5DB",
+                fontWeight: slot % 2 === 0 ? 500 : 400,
+                fontFamily: "DM Mono, monospace",
+                lineHeight: 1,
+              }}>
+                {slotToTime(slot)}
+              </span>
             </div>
           ))}
         </div>
@@ -929,8 +934,8 @@ export function WeekPage() {
             <div className="flex items-center gap-1">
               <button onClick={() => setWeek(addWeeks(week, -1))}
                 className="flex items-center justify-center rounded-lg transition-all"
-                style={{ width: isMobile ? 36 : 28, height: isMobile ? 36 : 28, minHeight: 36, background: T.bg, border: `1px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
-                <i className="ti ti-chevron-left" style={{ fontSize: 13 }} />
+                style={{ width: 32, height: 32, flexShrink: 0, background: "#FFFFFF", border: "1.5px solid #E5E7EB", borderRadius: 8, color: "#4B5563", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="ti ti-chevron-left" style={{ fontSize: 14, color: "#4B5563" }} />
               </button>
               <span className="text-xs md:text-sm font-medium px-2 md:px-3 text-center"
                 style={{ color: T.text2, minWidth: isMobile ? 100 : 140 }}>
@@ -938,8 +943,8 @@ export function WeekPage() {
               </span>
               <button onClick={() => setWeek(addWeeks(week, 1))}
                 className="flex items-center justify-center rounded-lg transition-all"
-                style={{ width: isMobile ? 36 : 28, height: isMobile ? 36 : 28, minHeight: 36, background: T.bg, border: `1px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
-                <i className="ti ti-chevron-right" style={{ fontSize: 13 }} />
+                style={{ width: 32, height: 32, flexShrink: 0, background: "#FFFFFF", border: "1.5px solid #E5E7EB", borderRadius: 8, color: "#4B5563", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="ti ti-chevron-right" style={{ fontSize: 14, color: "#4B5563" }} />
               </button>
               <button onClick={() => { setWeek(getISOWeek(new Date())); setActiveDate(today); }}
                 className="px-3 py-1 rounded-lg text-xs font-medium transition-all ml-1"
@@ -948,6 +953,7 @@ export function WeekPage() {
               </button>
             </div>
           </div>
+          <UserMenu />
         </header>
 
         {/* İzin banner */}

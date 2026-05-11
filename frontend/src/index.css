@@ -11,7 +11,7 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
   html { font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-  body { margin: 0; background: #F5F6FA; color: #111827; }
+  body { margin: 0; background: #F5F6FA; color: #111827; overflow-x: hidden; }
 }
 
 .ti { vertical-align: -2px; }

@@ -2,6 +2,7 @@ import { useState, useEffect, ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { Sidebar } from "../components/Sidebar";
+import { UserMenu } from "../components/UserMenu";
 import { api } from "../api/client";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
@@ -188,16 +189,19 @@ export function UsersPage() {
                 {users.length} kullanıcı · {activeCount} aktif
               </p>
             </div>
-            <button
-              onClick={() => { setCreateModal(true); setForm({ name: "", email: "", password: "", role: "EMPLOYEE" }); setFormError(""); }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold"
-              style={{ background: T.orange, color: "white", border: "none", cursor: "pointer" }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = T.red)}
-              onMouseLeave={(e) => (e.currentTarget.style.background = T.orange)}
-            >
-              <i className="ti ti-user-plus" />
-              <span className="hidden sm:inline"> Yeni Kullanıcı</span>
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => { setCreateModal(true); setForm({ name: "", email: "", password: "", role: "EMPLOYEE" }); setFormError(""); }}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold"
+                style={{ background: T.orange, color: "white", border: "none", cursor: "pointer" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = T.red)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = T.orange)}
+              >
+                <i className="ti ti-user-plus" />
+                <span className="hidden sm:inline"> Yeni Kullanıcı</span>
+              </button>
+              <UserMenu />
+            </div>
           </div>
         </div>
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { Sidebar } from "../components/Sidebar";
+import { UserMenu } from "../components/UserMenu";
 import { api } from "../api/client";
 import { Project } from "../types";
 
@@ -272,6 +273,7 @@ export function ApprovalsPage() {
             >
               <i className="ti ti-refresh" style={{ fontSize: 13 }} />
             </button>
+            <UserMenu />
           </div>
         </header>
 

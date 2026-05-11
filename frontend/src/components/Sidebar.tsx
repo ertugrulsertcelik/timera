@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
+// logout moved to UserMenu component
 
 const surface = "#FFFFFF";
 const border  = "#E5E7EB";
@@ -13,15 +14,15 @@ const amber   = "#0EA5E9";
 const NAV_ITEMS = [
   { icon: "ti-calendar-week", label: "Bu Hafta",     path: "/" },
   { icon: "ti-beach",         label: "İzin Takibi",  path: "/leaves" },
-  { icon: "ti-chart-bar",     label: "Raporlar",     path: "/reports" },
   { icon: "ti-trophy",        label: "Sıralama",     path: "/leaderboard" },
 ];
 
 const ADMIN_ITEMS = [
-  { icon: "ti-checks",   label: "Onaylar",      path: "/approvals" },
-  { icon: "ti-folder",   label: "Projeler",     path: "/projects" },
-  { icon: "ti-users",    label: "Kullanıcılar", path: "/users" },
-  { icon: "ti-webhook",  label: "Webhooks",     path: "/webhooks" },
+  { icon: "ti-checks",     label: "Onaylar",      path: "/approvals" },
+  { icon: "ti-chart-bar",  label: "Raporlar",     path: "/reports" },
+  { icon: "ti-folder",     label: "Projeler",     path: "/projects" },
+  { icon: "ti-users",      label: "Kullanıcılar", path: "/users" },
+  { icon: "ti-webhook",    label: "Webhooks",     path: "/webhooks" },
 ];
 
 interface SidebarProps {
@@ -30,7 +31,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ pendingCount = 0, gamification }: SidebarProps) {
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
   const navigate         = useNavigate();
   const { pathname }     = useLocation();
 
@@ -175,24 +176,6 @@ export function Sidebar({ pendingCount = 0, gamification }: SidebarProps) {
           )}
         </div>
       )}
-
-      {/* Çıkış */}
-      <button
-        onClick={logout}
-        className="flex items-center gap-2 text-sm transition-all flex-shrink-0"
-        style={{
-          padding: "14px 20px",
-          background: "none", border: "none",
-          borderTop: `1px solid ${border}`,
-          color: muted, cursor: "pointer", textAlign: "left",
-          fontFamily: "inherit",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = red)}
-        onMouseLeave={(e) => (e.currentTarget.style.color = muted)}
-      >
-        <i className="ti ti-logout text-sm" />
-        Çıkış Yap
-      </button>
 
       {/* Geliştirici notu */}
       <p style={{

@@ -30,6 +30,7 @@ const FEATURES = [
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
 
   const { login, isLoading, user } = useAuthStore();
@@ -43,7 +44,7 @@ export function LoginPage() {
     e.preventDefault();
     setError("");
     try {
-      await login(email, password);
+      await login(email, password, remember);
       navigate("/");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Giriş başarısız");
@@ -135,6 +136,20 @@ export function LoginPage() {
                     onBlur={(e)  => { e.target.style.borderColor = "#E5E7EB"; e.target.style.background = "#F9FAFB"; }}
                   />
                 </div>
+              </div>
+
+              {/* Beni hatırla */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="remember"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.target.checked)}
+                  style={{ width: 15, height: 15, accentColor: "#2563EB", cursor: "pointer" }}
+                />
+                <label htmlFor="remember" style={{ fontSize: 13, color: "#4B5563", cursor: "pointer" }}>
+                  Beni hatırla
+                </label>
               </div>
 
               {/* Hata */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuthStore } from "../store/authStore";
 import { Sidebar } from "../components/Sidebar";
+import { UserMenu } from "../components/UserMenu";
 import { api } from "../api/client";
 
 // ─── Tasarım sabitleri ────────────────────────────────────────────────────────
@@ -144,20 +145,23 @@ export function LeaderboardPage() {
               </span>
             )}
           </div>
-          {myEntry && (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
-              style={{ background: T.orangeL, border: `1px solid rgba(37,99,235,0.2)` }}>
-              <i className="ti ti-user text-xs" style={{ color: T.orange }} />
-              <span className="text-xs font-medium" style={{ color: T.text2 }}>Sıran:</span>
-              <span className="text-xs font-bold" style={{ color: T.orange, fontFamily: "DM Mono, monospace" }}>
-                #{myEntry.rank}
-              </span>
-              <span style={{ color: T.border }}>·</span>
-              <span className="text-xs font-semibold" style={{ color: T.text, fontFamily: "DM Mono, monospace" }}>
-                {myEntry.xp.toLocaleString("tr-TR")} XP
-              </span>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            {myEntry && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
+                style={{ background: T.orangeL, border: `1px solid rgba(37,99,235,0.2)` }}>
+                <i className="ti ti-user text-xs" style={{ color: T.orange }} />
+                <span className="text-xs font-medium" style={{ color: T.text2 }}>Sıran:</span>
+                <span className="text-xs font-bold" style={{ color: T.orange, fontFamily: "DM Mono, monospace" }}>
+                  #{myEntry.rank}
+                </span>
+                <span style={{ color: T.border }}>·</span>
+                <span className="text-xs font-semibold" style={{ color: T.text, fontFamily: "DM Mono, monospace" }}>
+                  {myEntry.xp.toLocaleString("tr-TR")} XP
+                </span>
+              </div>
+            )}
+            <UserMenu />
+          </div>
         </header>
 
         <div className="flex-1 overflow-y-auto px-4 md:px-6 pt-4 md:pt-5 pb-20 md:pb-5">

@@ -7,6 +7,7 @@ import {
 import { useAuthStore } from "../store/authStore";
 import { api } from "../api/client";
 import { Sidebar } from "../components/Sidebar";
+import { UserMenu } from "../components/UserMenu";
 
 // ── Design Tokens ─────────────────────────────────────────────────────────────
 const T = {
@@ -1014,6 +1015,7 @@ function FilterPanel({
     <div style={{
       width: 300, minWidth: 300, background: T.surface,
       borderRight: `1px solid ${T.border}`, overflowY: "auto",
+      maxHeight: "calc(100vh - 60px)", paddingBottom: 100,
       display: "flex", flexDirection: "column",
     }}>
       {/* Rapor Tipi */}
@@ -1338,7 +1340,13 @@ function FilterPanel({
       </div>
 
       {/* Build button (sticky bottom) */}
-      <div style={{ padding: "14px 16px", marginTop: "auto" }}>
+      <div style={{
+        position: "sticky" as const,
+        bottom: 0,
+        background: "#FFFFFF",
+        padding: "12px 16px",
+        borderTop: "1px solid #E5E7EB",
+      }}>
         <button
           onClick={onBuild}
           disabled={building}
@@ -1643,8 +1651,10 @@ export function ReportsPage() {
             padding: "14px 24px", background: T.surface,
             borderBottom: `1px solid ${T.border}`,
             boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
           }}>
             <span style={{ fontSize: 14, fontWeight: 700, color: T.text }}>Kişisel Raporlar</span>
+            <UserMenu />
           </header>
           <EmployeePersonalDashboard />
         </div>
@@ -1696,6 +1706,7 @@ export function ReportsPage() {
               </span>
             )}
             <ExportDropdown filters={filters} onToast={showToast} />
+            <UserMenu />
           </div>
         </header>
 
