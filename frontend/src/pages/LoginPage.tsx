@@ -33,6 +33,8 @@ export function LoginPage() {
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState("");
 
+  const [isDesktop] = useState(() => typeof window !== "undefined" && window.innerWidth >= 1024);
+
   const { login, isLoading, user } = useAuthStore();
   const navigate = useNavigate();
 
@@ -63,23 +65,42 @@ export function LoginPage() {
           <div className="w-full max-w-sm">
 
             {/* Logo */}
-            <div className="flex items-center gap-3 mb-10">
-              <img src="/logo.png" alt="Timera"
-                style={{ width: 56, height: 56, objectFit: "contain" }} />
-              <div>
-                <p className="font-bold leading-none"
-                  style={{ fontSize: 20, color: "#1e2d4a", letterSpacing: "0.01em" }}>
-                  timera
-                </p>
-                <p style={{ fontSize: 10, letterSpacing: "0.12em", color: "#9CA3AF", marginTop: 1, textTransform: "uppercase" }}>
-                  Timesheet Made Simple
-                </p>
-              </div>
+            <div style={{
+              display: "flex", flexDirection: "column", alignItems: "center",
+              textAlign: "center", marginBottom: isDesktop ? 12 : 32,
+            }}>
+              <img src="/logo.png" alt="Timera" style={{
+                width: isDesktop ? 300 : 500,
+                height: isDesktop ? 300 : 500,
+                objectFit: "contain",
+                background: "var(--c-surface)",
+                display: "block",
+                marginLeft: -40,
+              }} />
+              <p style={{
+                fontWeight: 800,
+                fontSize: isDesktop ? 80 : 100,
+                color: "var(--c-text)",
+                letterSpacing: isDesktop ? "0.01em" : "-8px",
+                marginTop: isDesktop ? -80 : 80,
+                lineHeight: 0.9,
+              }}>
+                timera
+              </p>
+              <p style={{
+                fontSize: isDesktop ? 10 : 14,
+                letterSpacing: isDesktop ? "0.12em" : "4px",
+                color: "var(--c-muted)",
+                marginTop: isDesktop ? 2 : 6,
+                textTransform: "uppercase" as const,
+              }}>
+                Timesheet Made Simple
+              </p>
             </div>
 
             {/* Başlık */}
-            <h2 className="text-2xl font-bold mb-1" style={{ color: "#111827" }}>Hoş geldiniz</h2>
-            <p className="text-sm mb-8" style={{ color: "#6B7280" }}>
+            <h2 className="text-2xl font-bold mb-1" style={{ color: "var(--c-text)" }}>Hoş geldiniz</h2>
+            <p className="text-sm mb-8" style={{ color: "var(--c-text2)" }}>
               Hesabınıza giriş yapın
             </p>
 
@@ -89,25 +110,25 @@ export function LoginPage() {
               {/* E-posta */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium mb-1.5"
-                  style={{ color: "#374151" }}>
+                  style={{ color: "var(--c-text2)" }}>
                   E-posta
                 </label>
                 <div className="relative">
                   <i className="ti ti-mail absolute left-3 top-1/2 -translate-y-1/2 text-sm"
-                    style={{ color: "#9CA3AF" }} />
+                    style={{ color: "var(--c-muted)" }} />
                   <input
                     id="email" type="email" required autoComplete="email"
                     value={email} onChange={(e) => setEmail(e.target.value)}
                     placeholder="ornek@sirket.com"
                     className="w-full pl-9 pr-4 py-3 rounded-xl text-sm outline-none"
                     style={{
-                      background: "#F9FAFB",
-                      border: "1.5px solid #E5E7EB",
-                      color: "#111827",
+                      background: "var(--c-input-bg)",
+                      border: "1.5px solid var(--c-border)",
+                      color: "var(--c-text)",
                       transition: "border-color 0.2s, background 0.2s",
                     }}
-                    onFocus={(e) => { e.target.style.borderColor = "#2563EB"; e.target.style.background = "#FFFFFF"; }}
-                    onBlur={(e) => { e.target.style.borderColor = "#E5E7EB"; e.target.style.background = "#F9FAFB"; }}
+                    onFocus={(e) => { e.target.style.borderColor = "#2563EB"; e.target.style.background = "var(--c-surface)"; }}
+                    onBlur={(e) => { e.target.style.borderColor = "var(--c-border)"; e.target.style.background = "var(--c-input-bg)"; }}
                   />
                 </div>
               </div>
@@ -115,25 +136,25 @@ export function LoginPage() {
               {/* Şifre */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium mb-1.5"
-                  style={{ color: "#374151" }}>
+                  style={{ color: "var(--c-text2)" }}>
                   Şifre
                 </label>
                 <div className="relative">
                   <i className="ti ti-lock absolute left-3 top-1/2 -translate-y-1/2 text-sm"
-                    style={{ color: "#9CA3AF" }} />
+                    style={{ color: "var(--c-muted)" }} />
                   <input
                     id="password" type="password" required autoComplete="current-password"
                     value={password} onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     className="w-full pl-9 pr-4 py-3 rounded-xl text-sm outline-none"
                     style={{
-                      background: "#F9FAFB",
-                      border: "1.5px solid #E5E7EB",
-                      color: "#111827",
+                      background: "var(--c-input-bg)",
+                      border: "1.5px solid var(--c-border)",
+                      color: "var(--c-text)",
                       transition: "border-color 0.2s, background 0.2s",
                     }}
-                    onFocus={(e) => { e.target.style.borderColor = "#2563EB"; e.target.style.background = "#FFFFFF"; }}
-                    onBlur={(e) => { e.target.style.borderColor = "#E5E7EB"; e.target.style.background = "#F9FAFB"; }}
+                    onFocus={(e) => { e.target.style.borderColor = "#2563EB"; e.target.style.background = "var(--c-surface)"; }}
+                    onBlur={(e) => { e.target.style.borderColor = "var(--c-border)"; e.target.style.background = "var(--c-input-bg)"; }}
                   />
                 </div>
               </div>
@@ -147,7 +168,7 @@ export function LoginPage() {
                   onChange={(e) => setRemember(e.target.checked)}
                   style={{ width: 15, height: 15, accentColor: "#2563EB", cursor: "pointer" }}
                 />
-                <label htmlFor="remember" style={{ fontSize: 13, color: "#4B5563", cursor: "pointer" }}>
+                <label htmlFor="remember" style={{ fontSize: 13, color: "var(--c-text2)", cursor: "pointer" }}>
                   Beni hatırla
                 </label>
               </div>

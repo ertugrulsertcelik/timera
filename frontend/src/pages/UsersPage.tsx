@@ -259,7 +259,7 @@ export function UsersPage() {
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-medium"
                           style={u.isActive
                             ? { background: T.greenL, color: T.green, border: `1px solid ${T.greenB}` }
-                            : { background: "#F9FAFB", color: T.muted, border: `1px solid ${T.border}` }}>
+                            : { background: "var(--c-input-bg)", color: T.muted, border: `1px solid ${T.border}` }}>
                           {u.isActive ? "Aktif" : "Pasif"}
                         </span>
                       </td>

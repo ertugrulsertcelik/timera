@@ -99,7 +99,7 @@ export function Sidebar({ pendingCount = 0, gamification }: SidebarProps) {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
           <img src="/logo.png" alt="Timera"
-            style={{ width: 38, height: 38, objectFit: "contain", flexShrink: 0 }} />
+            style={{ width: 38, height: 38, objectFit: "contain", flexShrink: 0, background: "var(--c-surface)", display: "block" }} />
           <div>
             <p style={{ margin: 0, color: "var(--c-text)", fontWeight: 700, fontSize: 15, letterSpacing: "0.01em" }}>
               timera

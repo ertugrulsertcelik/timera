@@ -13,6 +13,7 @@ html:not([data-theme="dark"]) {
   --c-bg:       #F5F6FA;
   --c-surface:  #FFFFFF;
   --c-surface2: #FAFAFA;
+  --c-input-bg: #F9FAFB;
   --c-border:   #E5E7EB;
   --c-border2:  #F3F4F6;
   --c-text:     #111827;
@@ -25,6 +26,7 @@ html[data-theme="dark"] {
   --c-bg:       #0F172A;
   --c-surface:  #1E293B;
   --c-surface2: #162032;
+  --c-input-bg: #162032;
   --c-border:   #334155;
   --c-border2:  #253347;
   --c-text:     #F1F5F9;
@@ -88,8 +90,8 @@ input, textarea, select { font-size: 16px; } /* iOS'da focus zoom'u engeller */
   to   { transform: translateY(0);    opacity: 1; }
 }
 
-input::placeholder { color: #9CA3AF; }
+input::placeholder { color: var(--c-muted); }
 input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
-  -webkit-text-fill-color: #111827 !important;
+  -webkit-box-shadow: 0 0 0 30px var(--c-surface) inset !important;
+  -webkit-text-fill-color: var(--c-text) !important;
 }

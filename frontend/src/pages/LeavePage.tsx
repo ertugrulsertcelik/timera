@@ -14,7 +14,7 @@ const T = {
   blue: "#1565C0", blueL: "#EFF6FF", blueB: "#BFDBFE",
   red: "#991B1B", redL: "#FEF2F2", redB: "#FECACA",
   amber: "#92400E", amberL: "#FEF3C7", amberB: "#FDE68A",
-  gray: "#6B7280", grayL: "#F9FAFB",
+  gray: "#6B7280", grayL: "var(--c-surface2)",
 };
 
 const TYPE_LABEL: Record<string, string> = {
@@ -78,9 +78,9 @@ function RejectModal({ leave, onConfirm, onClose, saving }: {
         <textarea value={note} onChange={(e) => setNote(e.target.value.slice(0, 500))} rows={3} maxLength={500}
           placeholder="Açıklama..."
           className="w-full rounded-xl px-3 py-2.5 text-xs resize-none outline-none"
-          style={{ background: "#F9FAFB", border: `1.5px solid ${T.border}`, color: T.text }}
-          onFocus={(e) => { e.target.style.borderColor = T.red; e.target.style.background = "#fff"; }}
-          onBlur={(e) => { e.target.style.borderColor = T.border; e.target.style.background = "#F9FAFB"; }} />
+          style={{ background: "var(--c-input-bg)", border: `1.5px solid ${T.border}`, color: T.text }}
+          onFocus={(e) => { e.target.style.borderColor = T.red; e.target.style.background = "var(--c-surface)"; }}
+          onBlur={(e) => { e.target.style.borderColor = T.border; e.target.style.background = "var(--c-input-bg)"; }} />
         <div className="flex gap-2 mt-4">
           <button onClick={onClose} className="flex-1 py-2 rounded-xl text-xs font-medium"
             style={{ background: T.grayL, border: `1px solid ${T.border}`, color: T.text2, cursor: "pointer" }}>
@@ -314,7 +314,7 @@ export function LeavePage() {
 
   const inputStyle: React.CSSProperties = {
     width: "100%", padding: "8px 12px", borderRadius: 8,
-    border: `1px solid ${T.border}`, background: "#F9FAFB",
+    border: `1px solid ${T.border}`, background: "var(--c-input-bg)",
     color: T.text, fontSize: 13, outline: "none", boxSizing: "border-box",
   };
 
@@ -333,7 +333,7 @@ export function LeavePage() {
             {isManager && (
               <select value={filterUserId} onChange={(e) => setFilterUserId(e.target.value)}
                 className="rounded-lg px-2 py-1.5 text-xs outline-none"
-                style={{ background: "#F9FAFB", border: `1px solid ${T.border}`, color: T.text }}>
+                style={{ background: "var(--c-input-bg)", border: `1px solid ${T.border}`, color: T.text }}>
                 <option value="">Tüm Çalışanlar</option>
                 {users.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
               </select>
@@ -442,7 +442,7 @@ export function LeavePage() {
             ) : (
               <table className="w-full">
                 <thead>
-                  <tr style={{ background: "#F9FAFB" }}>
+                  <tr style={{ background: "var(--c-surface2)" }}>
                     {isManager && <th className="text-left px-4 py-2.5 text-xs font-semibold" style={{ color: T.muted }}>Çalışan</th>}
                     <th className="text-left px-4 py-2.5 text-xs font-semibold" style={{ color: T.muted }}>Tarih</th>
                     <th className="text-left px-4 py-2.5 text-xs font-semibold" style={{ color: T.muted }}>Tür</th>

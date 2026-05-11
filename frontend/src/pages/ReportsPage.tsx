@@ -580,7 +580,7 @@ function ChartArea({
     });
     const thStyle: React.CSSProperties = {
       padding: "10px 14px", textAlign: "left", fontSize: 11, fontWeight: 700,
-      color: T.text2, background: "#F9FAFB", cursor: "pointer", whiteSpace: "nowrap",
+      color: T.text2, background: "var(--c-input-bg)", cursor: "pointer", whiteSpace: "nowrap",
     };
     const tdStyle: React.CSSProperties = {
       padding: "10px 14px", fontSize: 12, color: T.text, borderTop: `1px solid ${T.border}`,
@@ -608,9 +608,9 @@ function ChartArea({
           <tbody>
             {absRows.map((row, i) => (
               <tr key={row.userId}
-                style={{ background: i % 2 === 0 ? "#F9FAFB" : T.surface }}
+                style={{ background: i % 2 === 0 ? "var(--c-surface2)" : T.surface }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = T.light; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = i % 2 === 0 ? "#F9FAFB" : T.surface; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = i % 2 === 0 ? "var(--c-surface2)" : T.surface; }}
               >
                 <td style={tdStyle}>{row.name}</td>
                 <td style={tdStyle}>{row.businessDays}</td>
@@ -806,7 +806,7 @@ function ChartArea({
 
   const thStyle: React.CSSProperties = {
     padding: "10px 14px", textAlign: "left", fontSize: 11, fontWeight: 700,
-    color: T.text2, background: "#F9FAFB", cursor: "pointer", whiteSpace: "nowrap",
+    color: T.text2, background: "var(--c-input-bg)", cursor: "pointer", whiteSpace: "nowrap",
   };
   const tdStyle: React.CSSProperties = {
     padding: "10px 14px", fontSize: 12, color: T.text, borderTop: `1px solid ${T.border}`,
@@ -840,9 +840,9 @@ function ChartArea({
             const hrs = Math.round((min / 60) * 10) / 10;
             return (
               <tr key={e.id}
-                style={{ background: i % 2 === 0 ? "#F9FAFB" : T.surface }}
+                style={{ background: i % 2 === 0 ? "var(--c-surface2)" : T.surface }}
                 onMouseEnter={(ev) => { ev.currentTarget.style.background = T.light; }}
-                onMouseLeave={(ev) => { ev.currentTarget.style.background = i % 2 === 0 ? "#F9FAFB" : T.surface; }}
+                onMouseLeave={(ev) => { ev.currentTarget.style.background = i % 2 === 0 ? "var(--c-surface2)" : T.surface; }}
               >
                 {activeCols.includes("user")      && <td style={tdStyle}>{e.userName}</td>}
                 {activeCols.includes("date")      && <td style={{ ...tdStyle, fontFamily: "DM Mono, monospace", fontSize: 11 }}>{e.date}</td>}
@@ -1049,14 +1049,14 @@ function FilterPanel({
           <input
             type="date" value={filters.startDate}
             onChange={(e) => set("startDate", e.target.value)}
-            style={{ padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "#F9FAFB" }}
+            style={{ padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "var(--c-input-bg)" }}
             onFocus={(e) => { e.target.style.borderColor = T.primary; }}
             onBlur={(e) => { e.target.style.borderColor = T.border; }}
           />
           <input
             type="date" value={filters.endDate}
             onChange={(e) => set("endDate", e.target.value)}
-            style={{ padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "#F9FAFB" }}
+            style={{ padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "var(--c-input-bg)" }}
             onFocus={(e) => { e.target.style.borderColor = T.primary; }}
             onBlur={(e) => { e.target.style.borderColor = T.border; }}
           />
@@ -1095,7 +1095,7 @@ function FilterPanel({
           placeholder="Ara..."
           value={userSearch}
           onChange={(e) => setUserSearch(e.target.value)}
-          style={{ width: "100%", marginBottom: 8, padding: "6px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, outline: "none", background: "#F9FAFB", boxSizing: "border-box" as const }}
+          style={{ width: "100%", marginBottom: 8, padding: "6px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, outline: "none", background: "var(--c-input-bg)", boxSizing: "border-box" as const }}
           onFocus={(e) => { e.target.style.borderColor = T.primary; }}
           onBlur={(e) => { e.target.style.borderColor = T.border; }}
         />
@@ -1130,7 +1130,7 @@ function FilterPanel({
           placeholder="Ara..."
           value={projectSearch}
           onChange={(e) => setProjectSearch(e.target.value)}
-          style={{ width: "100%", marginBottom: 8, padding: "6px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, outline: "none", background: "#F9FAFB", boxSizing: "border-box" as const }}
+          style={{ width: "100%", marginBottom: 8, padding: "6px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, outline: "none", background: "var(--c-input-bg)", boxSizing: "border-box" as const }}
           onFocus={(e) => { e.target.style.borderColor = T.primary; }}
           onBlur={(e) => { e.target.style.borderColor = T.border; }}
         />
@@ -1199,7 +1199,7 @@ function FilterPanel({
               style={{
                 flex: 1, padding: "6px 4px", borderRadius: 8, cursor: "pointer",
                 display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
-                background: filters.chartType === ct.key ? T.light : "#F9FAFB",
+                background: filters.chartType === ct.key ? T.light : "var(--c-surface2)",
                 border: filters.chartType === ct.key ? `1.5px solid ${T.primary}` : `1px solid ${T.border}`,
                 color: filters.chartType === ct.key ? T.primary : T.muted,
               }}
@@ -1215,7 +1215,7 @@ function FilterPanel({
           <select
             value={filters.groupBy}
             onChange={(e) => set("groupBy", e.target.value as Filters["groupBy"])}
-            style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "#F9FAFB" }}
+            style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "var(--c-input-bg)" }}
           >
             <option value="project">Projeye Göre</option>
             <option value="user">Çalışana Göre</option>
@@ -1230,7 +1230,7 @@ function FilterPanel({
           <select
             value={filters.sortBy}
             onChange={(e) => set("sortBy", e.target.value as Filters["sortBy"])}
-            style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "#F9FAFB" }}
+            style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "var(--c-input-bg)" }}
           >
             <option value="hours_desc">Saat (Yüksek→Düşük)</option>
             <option value="hours_asc">Saat (Düşük→Yüksek)</option>
@@ -1290,7 +1290,7 @@ function FilterPanel({
               <select
                 value={filters.autoFrequency}
                 onChange={(e) => set("autoFrequency", e.target.value as "WEEKLY" | "MONTHLY")}
-                style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "#F9FAFB" }}
+                style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "var(--c-input-bg)" }}
               >
                 <option value="WEEKLY">Haftalık</option>
                 <option value="MONTHLY">Aylık</option>
@@ -1302,7 +1302,7 @@ function FilterPanel({
                 <select
                   value={filters.autoDayOfWeek}
                   onChange={(e) => set("autoDayOfWeek", Number(e.target.value))}
-                  style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "#F9FAFB" }}
+                  style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "var(--c-input-bg)" }}
                 >
                   {DOW_LABELS.map((d, i) => (
                     <option key={i} value={i}>{d}</option>
@@ -1317,7 +1317,7 @@ function FilterPanel({
                 value={filters.autoEmails}
                 onChange={(e) => set("autoEmails", e.target.value)}
                 placeholder="ali@firma.com, veli@firma.com"
-                style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "#F9FAFB", boxSizing: "border-box" as const }}
+                style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: `1px solid ${T.border}`, fontSize: 12, color: T.text, outline: "none", background: "var(--c-input-bg)", boxSizing: "border-box" as const }}
                 onFocus={(e) => { e.target.style.borderColor = T.primary; }}
                 onBlur={(e) => { e.target.style.borderColor = T.border; }}
               />
@@ -1343,9 +1343,9 @@ function FilterPanel({
       <div style={{
         position: "sticky" as const,
         bottom: 0,
-        background: "#FFFFFF",
+        background: "var(--c-surface)",
         padding: "12px 16px",
-        borderTop: "1px solid #E5E7EB",
+        borderTop: `1px solid ${T.border}`,
       }}>
         <button
           onClick={onBuild}
@@ -1529,7 +1529,7 @@ function EmployeePersonalDashboard() {
                 <p style={{ fontSize: 22, fontWeight: 800, color: T.primary, fontFamily: "DM Mono, monospace" }}>{data.gamification.xpTotal}</p>
                 <p style={{ fontSize: 10, color: T.text2, marginTop: 2 }}>Seviye {Math.floor(data.gamification.xpTotal / 1000) + 1}</p>
               </div>
-              <div style={{ flex: 1, background: "#FFF7ED", borderRadius: 10, padding: 14, textAlign: "center" }}>
+              <div style={{ flex: 1, background: "var(--c-orangeL)", borderRadius: 10, padding: 14, textAlign: "center" }}>
                 <p style={{ fontSize: 11, color: T.muted, marginBottom: 4 }}>Gün Serisi</p>
                 <p style={{ fontSize: 22, fontWeight: 800, color: T.amber, fontFamily: "DM Mono, monospace" }}>{data.gamification.streakDays}</p>
                 <p style={{ fontSize: 10, color: T.text2, marginTop: 2 }}>ardışık gün</p>
@@ -1681,7 +1681,7 @@ export function ReportsPage() {
               onClick={() => setFilterOpen((o) => !o)}
               style={{
                 width: 34, height: 34, borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-                background: filterOpen ? T.light : "#F9FAFB", border: `1px solid ${filterOpen ? "#BFDBFE" : T.border}`,
+                background: filterOpen ? T.light : "var(--c-surface2)", border: `1px solid ${filterOpen ? "#BFDBFE" : T.border}`,
                 color: filterOpen ? T.primary : T.muted,
               }}
             >

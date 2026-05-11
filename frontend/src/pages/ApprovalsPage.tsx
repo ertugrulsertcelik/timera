@@ -105,20 +105,20 @@ function RejectModal({ entry, onConfirm, onClose, loading }: RejectModalProps) {
           placeholder="Açıklama ekle..."
           className="w-full rounded-xl px-3 py-2.5 text-xs resize-none outline-none"
           style={{
-            background: "#F9FAFB", border: `1.5px solid ${T.border}`,
+            background: "var(--c-input-bg)", border: `1.5px solid ${T.border}`,
             color: T.text, fontFamily: "DM Sans, sans-serif",
           }}
-          onFocus={(e) => { e.target.style.borderColor = "#1D4ED8"; e.target.style.background = "#FFFFFF"; }}
-          onBlur={(e)  => { e.target.style.borderColor = T.border;   e.target.style.background = "#F9FAFB"; }}
+          onFocus={(e) => { e.target.style.borderColor = "#1D4ED8"; e.target.style.background = "var(--c-surface)"; }}
+          onBlur={(e)  => { e.target.style.borderColor = T.border;   e.target.style.background = "var(--c-input-bg)"; }}
         />
 
         <div className="flex gap-2 mt-4">
           <button
             onClick={onClose}
             className="flex-1 py-2.5 rounded-xl text-xs font-medium transition-all"
-            style={{ background: "#F9FAFB", border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}
+            style={{ background: "var(--c-input-bg)", border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = T.border; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#F9FAFB"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--c-input-bg)"; }}
           >
             Vazgeç
           </button>

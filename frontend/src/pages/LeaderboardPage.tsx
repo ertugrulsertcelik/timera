@@ -205,7 +205,7 @@ export function LeaderboardPage() {
                 <div className="grid px-4 py-3 text-xs font-semibold"
                   style={{
                     gridTemplateColumns: "40px 1fr 80px 110px 130px 80px",
-                    background: "#F9FAFB", borderBottom: `1px solid ${T.border}`,
+                    background: "var(--c-surface2)", borderBottom: `1px solid ${T.border}`,
                     color: T.muted, textTransform: "uppercase", letterSpacing: "0.08em",
                   }}>
                   <span>#</span>
@@ -229,8 +229,8 @@ export function LeaderboardPage() {
                       style={{
                         gridTemplateColumns: "40px 1fr 80px 110px 130px 80px",
                         background: isMe
-                          ? "#FFF7F5"
-                          : idx % 2 === 0 ? T.surface : "#F9FAFB",
+                          ? T.orangeL
+                          : idx % 2 === 0 ? T.surface : "var(--c-surface2)",
                         borderBottom: idx < entries.length - 1 ? `1px solid ${T.border}` : "none",
                         borderLeft: isMe ? `3px solid ${T.orange}` : "3px solid transparent",
                       }}>

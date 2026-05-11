@@ -79,16 +79,16 @@ function ColorPicker({ value, onChange }: ColorPickerProps) {
             placeholder="F4631E"
             className="w-full rounded-xl pl-7 pr-3 py-2.5 text-xs outline-none"
             style={{
-              background: "#F9FAFB",
+              background: "var(--c-input-bg)",
               border: `1.5px solid ${isValidHex(raw) ? T.border : T.redB}`,
               color: T.text, fontFamily: "DM Mono, monospace", letterSpacing: "0.05em",
             }}
-            onFocus={(e) => { e.target.style.borderColor = isValidHex(raw) ? T.orange : T.redB; e.target.style.background = "#FFFFFF"; }}
-            onBlur={(e)  => { e.target.style.borderColor = isValidHex(raw) ? T.border : T.redB; e.target.style.background = "#F9FAFB"; }}
+            onFocus={(e) => { e.target.style.borderColor = isValidHex(raw) ? T.orange : T.redB; e.target.style.background = "var(--c-surface)"; }}
+            onBlur={(e)  => { e.target.style.borderColor = isValidHex(raw) ? T.border : T.redB; e.target.style.background = "var(--c-input-bg)"; }}
           />
         </div>
         <label className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 cursor-pointer transition-all"
-          style={{ background: "#F9FAFB", border: `1px solid ${T.border}` }}
+          style={{ background: "var(--c-input-bg)", border: `1px solid ${T.border}` }}
           onMouseEnter={(e) => { e.currentTarget.style.borderColor = T.orange; }}
           onMouseLeave={(e) => { e.currentTarget.style.borderColor = T.border; }}
           title="Renk seçici">
@@ -139,9 +139,9 @@ function ProjectModal({ initial, onSave, onClose, saving, error }: ProjectModalP
           </h3>
           <button onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-lg transition-all"
-            style={{ background: "#F9FAFB", border: `1px solid ${T.border}`, color: T.muted, cursor: "pointer" }}
+            style={{ background: "var(--c-input-bg)", border: `1px solid ${T.border}`, color: T.muted, cursor: "pointer" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = T.border; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#F9FAFB"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--c-input-bg)"; }}
           >
             <i className="ti ti-x text-sm" />
           </button>
@@ -156,11 +156,11 @@ function ProjectModal({ initial, onSave, onClose, saving, error }: ProjectModalP
           placeholder="Örn. Backend Geliştirme"
           className="w-full rounded-xl px-3 py-2.5 text-sm outline-none mb-4"
           style={{
-            background: "#F9FAFB", border: `1.5px solid ${T.border}`,
+            background: "var(--c-input-bg)", border: `1.5px solid ${T.border}`,
             color: T.text, fontFamily: "DM Sans, sans-serif",
           }}
-          onFocus={(e) => { e.target.style.borderColor = T.orange; e.target.style.background = "#FFFFFF"; }}
-          onBlur={(e)  => { e.target.style.borderColor = T.border;  e.target.style.background = "#F9FAFB"; }}
+          onFocus={(e) => { e.target.style.borderColor = T.orange; e.target.style.background = "var(--c-surface)"; }}
+          onBlur={(e)  => { e.target.style.borderColor = T.border;  e.target.style.background = "var(--c-input-bg)"; }}
           autoFocus
         />
 
@@ -175,11 +175,11 @@ function ProjectModal({ initial, onSave, onClose, saving, error }: ProjectModalP
           placeholder="Kısa bir açıklama..."
           className="w-full rounded-xl px-3 py-2.5 text-sm outline-none resize-none mb-4"
           style={{
-            background: "#F9FAFB", border: `1.5px solid ${T.border}`,
+            background: "var(--c-input-bg)", border: `1.5px solid ${T.border}`,
             color: T.text, fontFamily: "DM Sans, sans-serif",
           }}
-          onFocus={(e) => { e.target.style.borderColor = T.orange; e.target.style.background = "#FFFFFF"; }}
-          onBlur={(e)  => { e.target.style.borderColor = T.border;  e.target.style.background = "#F9FAFB"; }}
+          onFocus={(e) => { e.target.style.borderColor = T.orange; e.target.style.background = "var(--c-surface)"; }}
+          onBlur={(e)  => { e.target.style.borderColor = T.border;  e.target.style.background = "var(--c-input-bg)"; }}
         />
 
         <label className="block text-xs font-medium mb-2" style={{ color: T.text2 }}>Proje rengi</label>
@@ -195,9 +195,9 @@ function ProjectModal({ initial, onSave, onClose, saving, error }: ProjectModalP
         <div className="flex gap-2 mt-5">
           <button onClick={onClose}
             className="flex-1 py-2.5 rounded-xl text-xs font-medium transition-all"
-            style={{ background: "#F9FAFB", border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}
+            style={{ background: "var(--c-input-bg)", border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = T.border; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#F9FAFB"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--c-input-bg)"; }}
           >
             Vazgeç
           </button>
@@ -252,9 +252,9 @@ function DeactivateConfirm({ project, onConfirm, onClose, loading }: DeactivateC
         <div className="flex gap-2">
           <button onClick={onClose}
             className="flex-1 py-2.5 rounded-xl text-xs font-medium transition-all"
-            style={{ background: "#F9FAFB", border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}
+            style={{ background: "var(--c-input-bg)", border: `1.5px solid ${T.border}`, color: T.text2, cursor: "pointer" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = T.border; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "#F9FAFB"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--c-input-bg)"; }}
           >
             Vazgeç
           </button>
@@ -465,7 +465,7 @@ export function ProjectsPage() {
               {/* Başlık */}
               <div className="grid px-4 py-3" style={{
                 gridTemplateColumns: "2fr 3fr 90px 110px",
-                background: "#F9FAFB", borderBottom: `1px solid ${T.border}`,
+                background: "var(--c-input-bg)", borderBottom: `1px solid ${T.border}`,
               }}>
                 {["Proje", "Açıklama", "Durum", ""].map((h) => (
                   <span key={h} className="text-xs font-semibold"
@@ -512,7 +512,7 @@ export function ProjectsPage() {
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium"
                         style={project.isActive
                           ? { background: T.greenL, color: T.green, border: `1px solid ${T.greenB}` }
-                          : { background: "#F9FAFB", color: T.muted, border: `1px solid ${T.border}` }
+                          : { background: "var(--c-input-bg)", color: T.muted, border: `1px solid ${T.border}` }
                         }>
                         <span className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                           style={{ background: project.isActive ? T.green : T.muted }} />

@@ -169,7 +169,7 @@ export function WebhooksPage() {
 
   const inputStyle: React.CSSProperties = {
     width: "100%", padding: "9px 12px", borderRadius: 10,
-    border: `1.5px solid ${T.border}`, background: "#F9FAFB",
+    border: `1.5px solid ${T.border}`, background: "var(--c-input-bg)",
     color: T.text, fontSize: 13, outline: "none", boxSizing: "border-box",
     fontFamily: "DM Sans, sans-serif",
   };
@@ -275,7 +275,7 @@ export function WebhooksPage() {
                         disabled={testingId === h.id}
                         className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium"
                         style={{
-                          background: "#F9FAFB", border: `1px solid ${T.border}`,
+                          background: "var(--c-input-bg)", border: `1px solid ${T.border}`,
                           color: T.text2, cursor: "pointer",
                         }}
                       >
@@ -286,7 +286,7 @@ export function WebhooksPage() {
                         onClick={() => openEdit(h)}
                         className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium"
                         style={{
-                          background: "#F9FAFB", border: `1px solid ${T.border}`,
+                          background: "var(--c-input-bg)", border: `1px solid ${T.border}`,
                           color: T.text2, cursor: "pointer",
                         }}
                       >
@@ -357,7 +357,7 @@ export function WebhooksPage() {
                     style={{
                       flex: 1, padding: "9px", borderRadius: 10, border: `2px solid`,
                       borderColor: form.type === t ? T.orange : T.border,
-                      background: form.type === t ? T.orangeL : "#F9FAFB",
+                      background: form.type === t ? T.orangeL : "var(--c-input-bg)",
                       color: form.type === t ? T.orange : T.text2,
                       cursor: "pointer", fontWeight: 600, fontSize: 13,
                       fontFamily: "DM Sans, sans-serif",
@@ -434,7 +434,7 @@ export function WebhooksPage() {
                   onClick={() => setShowModal(false)}
                   style={{
                     flex: 1, padding: "10px", borderRadius: 10,
-                    background: "#F9FAFB", border: `1px solid ${T.border}`,
+                    background: "var(--c-input-bg)", border: `1px solid ${T.border}`,
                     color: T.text2, cursor: "pointer", fontSize: 13, fontWeight: 600,
                     fontFamily: "DM Sans, sans-serif",
                   }}

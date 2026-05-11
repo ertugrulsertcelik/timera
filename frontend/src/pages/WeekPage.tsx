@@ -56,6 +56,7 @@ const SLOTS = Array.from({ length: 48 }, (_, i) => i);
 const T = {
   bg: "var(--c-bg)",
   surface: "var(--c-surface)",
+  surface2: "var(--c-surface2)",
   border: "var(--c-border)",
   border2: "var(--c-border2)",
   text: "var(--c-text)",
@@ -69,7 +70,7 @@ const T = {
 };
 
 const STATUS = {
-  DRAFT:    { label: "Taslak",     color: "#6B7280", bg: "#F9FAFB", border: "#E5E7EB" },
+  DRAFT:    { label: "Taslak",     color: "var(--c-muted)",   bg: "var(--c-surface2)", border: "var(--c-border)" },
   PENDING:  { label: "Bekliyor",   color: "#92400E", bg: "#FFFBEB", border: "#FDE68A" },
   APPROVED: { label: "Onaylı",     color: "#166534", bg: "#F0FDF4", border: "#86EFAC" },
   REJECTED: { label: "Reddedildi", color: "#991B1B", bg: "#FEF2F2", border: "#FECACA" },
@@ -511,7 +512,7 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
       <div className="flex">
 
         {/* Saat etiketleri */}
-        <div className="flex-shrink-0" style={{ width: isMobile ? 48 : 56, background: "#FAFAFA" }}>
+        <div className="flex-shrink-0" style={{ width: isMobile ? 48 : 56, background: T.surface2 }}>
           {SLOTS.map((slot) => (
             <div key={slot} style={{
               height: slotH,
@@ -521,7 +522,7 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
             }}>
               <span style={{
                 fontSize: slot % 2 === 0 ? (isMobile ? 9 : 10) : (isMobile ? 8 : 9),
-                color: slot % 2 === 0 ? "#6B7280" : "#D1D5DB",
+                color: slot % 2 === 0 ? T.muted : T.border,
                 fontWeight: slot % 2 === 0 ? 500 : 400,
                 fontFamily: "DM Mono, monospace",
                 lineHeight: 1,
@@ -594,11 +595,11 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
                 title={e.status === "REJECTED" && rejNote && height < 56 ? `Red sebebi: ${rejNote}` : undefined}
               >
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, flex: 1 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "#1a1a1a", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: T.text, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {proj?.name}
                   </span>
                   {height > 32 && e.note && (
-                    <span style={{ fontSize: 11, color: "#888", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>
+                    <span style={{ fontSize: 11, color: T.muted, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 }}>
                       {e.note}
                     </span>
                   )}
@@ -611,13 +612,13 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", flexShrink: 0, marginLeft: 8, gap: 2 }}>
-                  <span style={{ fontSize: 10, fontFamily: "DM Mono, monospace", color: "#999", whiteSpace: "nowrap" }}>
+                  <span style={{ fontSize: 10, fontFamily: "DM Mono, monospace", color: T.muted, whiteSpace: "nowrap" }}>
                     {e.startTime} – {e.endTime}
                   </span>
                   <span style={{
                     fontSize: 9, padding: "1px 6px", borderRadius: 10, fontWeight: 500,
-                    background: e.status === "APPROVED" ? "#dcfce7" : e.status === "PENDING" ? "#fef9c3" : e.status === "REJECTED" ? "#fee2e2" : "#f3f4f6",
-                    color: e.status === "APPROVED" ? "#15803d" : e.status === "PENDING" ? "#a16207" : e.status === "REJECTED" ? "#b91c1c" : "#6b7280",
+                    background: e.status === "APPROVED" ? "#dcfce7" : e.status === "PENDING" ? "#fef9c3" : e.status === "REJECTED" ? "#fee2e2" : STATUS.DRAFT.bg,
+                    color: e.status === "APPROVED" ? "#15803d" : e.status === "PENDING" ? "#a16207" : e.status === "REJECTED" ? "#b91c1c" : STATUS.DRAFT.color,
                   }}>
                     {e.status === "APPROVED" ? "Onaylı" : e.status === "PENDING" ? "Bekliyor" : e.status === "REJECTED" ? "Reddedildi" : "Taslak"}
                   </span>
@@ -934,8 +935,8 @@ export function WeekPage() {
             <div className="flex items-center gap-1">
               <button onClick={() => setWeek(addWeeks(week, -1))}
                 className="flex items-center justify-center rounded-lg transition-all"
-                style={{ width: 32, height: 32, flexShrink: 0, background: "#FFFFFF", border: "1.5px solid #E5E7EB", borderRadius: 8, color: "#4B5563", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <i className="ti ti-chevron-left" style={{ fontSize: 14, color: "#4B5563" }} />
+                style={{ width: 32, height: 32, flexShrink: 0, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 8, color: T.text2, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="ti ti-chevron-left" style={{ fontSize: 14, color: T.text2 }} />
               </button>
               <span className="text-xs md:text-sm font-medium px-2 md:px-3 text-center"
                 style={{ color: T.text2, minWidth: isMobile ? 100 : 140 }}>
@@ -943,8 +944,8 @@ export function WeekPage() {
               </span>
               <button onClick={() => setWeek(addWeeks(week, 1))}
                 className="flex items-center justify-center rounded-lg transition-all"
-                style={{ width: 32, height: 32, flexShrink: 0, background: "#FFFFFF", border: "1.5px solid #E5E7EB", borderRadius: 8, color: "#4B5563", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <i className="ti ti-chevron-right" style={{ fontSize: 14, color: "#4B5563" }} />
+                style={{ width: 32, height: 32, flexShrink: 0, background: T.surface, border: `1.5px solid ${T.border}`, borderRadius: 8, color: T.text2, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <i className="ti ti-chevron-right" style={{ fontSize: 14, color: T.text2 }} />
               </button>
               <button onClick={() => { setWeek(getISOWeek(new Date())); setActiveDate(today); }}
                 className="px-3 py-1 rounded-lg text-xs font-medium transition-all ml-1"
@@ -1074,7 +1075,7 @@ export function WeekPage() {
 
             {/* Grid başlık */}
             <div className="flex items-center justify-between px-4 md:px-5 py-3 flex-shrink-0"
-              style={{ borderBottom: `1px solid ${T.border}`, background: "#FAFAFA" }}>
+              style={{ borderBottom: `1px solid ${T.border}`, background: T.surface2 }}>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-bold" style={{ color: T.text }}>
                   {formatDate(activeDate)} — {DAY_LABELS[weekDates.indexOf(activeDate)]}
@@ -1113,7 +1114,7 @@ export function WeekPage() {
 
             {/* Masaüstü submit bar */}
             <div className="hidden md:flex items-center justify-between px-5 py-3 flex-shrink-0"
-              style={{ borderTop: `1px solid ${T.border}`, background: "#FAFAFA" }}>
+              style={{ borderTop: `1px solid ${T.border}`, background: T.surface2 }}>
               {submitBarContent}
             </div>
           </div>
