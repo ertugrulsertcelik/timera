@@ -918,13 +918,13 @@ export function WeekPage() {
   );
 
   return (
-    <div className="flex min-h-screen" style={{ background: T.bg }}>
+    <div className="flex" style={{ background: T.bg, height: "100vh", overflow: "hidden" }}>
 
       {/* Sidebar — masaüstünde görünür (Sidebar kendi CSS'iyle mobilde gizlenir) */}
       <Sidebar gamification={gamification} />
 
       {/* Ana içerik */}
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
 
         {/* Topbar */}
         <header className="flex items-center justify-between px-4 md:px-6 py-3 flex-shrink-0"
@@ -984,11 +984,11 @@ export function WeekPage() {
 
         {/* Kaydırılabilir içerik */}
         <div
-          className="flex-1 overflow-y-auto px-4 md:px-6 py-4 md:py-5"
-          style={{ paddingBottom: isMobile ? 160 : 20 }}>
+          className="flex-1 flex flex-col min-h-0 px-4 md:px-6 pt-4 md:pt-5"
+          style={{ paddingBottom: isMobile ? 160 : 20, overflow: "hidden" }}>
 
           {/* Stat kartları — mobilde 2 sütun, masaüstünde 4 sütun */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4 md:mb-5 flex-shrink-0">
             {/* Bu Hafta */}
             <div className="rounded-xl px-3 md:px-4 py-3 md:py-4"
               style={{ background: T.surface, borderTop: `3px solid ${T.orange}`, boxShadow: "0 1px 3px rgba(0,0,0,0.08)" }}>
@@ -1028,7 +1028,7 @@ export function WeekPage() {
           </div>
 
           {/* Gün sekmeleri — yatay kaydırılabilir */}
-          <div ref={dayTabsRef} className="flex gap-1.5 mb-4 overflow-x-auto no-scrollbar pb-1">
+          <div ref={dayTabsRef} className="flex gap-1.5 mb-3 overflow-x-auto no-scrollbar pb-1 flex-shrink-0">
             {weekDates.map((date, i) => {
               const cnt = entries.filter((e) => e.date === date).length;
               const hasPend = entries.some((e) => e.date === date && e.status === "PENDING");
@@ -1069,11 +1069,11 @@ export function WeekPage() {
           </div>
 
           {/* Grid kapsayıcı */}
-          <div className="rounded-2xl overflow-hidden"
+          <div className="rounded-2xl overflow-hidden flex flex-col flex-1 min-h-0"
             style={{ background: T.surface, border: `1px solid ${T.border}`, boxShadow: "0 1px 3px rgba(0,0,0,0.06)" }}>
 
             {/* Grid başlık */}
-            <div className="flex items-center justify-between px-4 md:px-5 py-3"
+            <div className="flex items-center justify-between px-4 md:px-5 py-3 flex-shrink-0"
               style={{ borderBottom: `1px solid ${T.border}`, background: "#FAFAFA" }}>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-bold" style={{ color: T.text }}>
@@ -1093,8 +1093,8 @@ export function WeekPage() {
             </div>
 
             {/* Scrollable grid */}
-            <div ref={gridScrollRef} className="time-grid-scroll"
-              style={{ height: isMobile ? 420 : 480, overflowY: "auto" }}>
+            <div ref={gridScrollRef} className="time-grid-scroll flex-1 min-h-0"
+              style={{ overflowY: "auto" }}>
               {loading && !initialLoaded.current ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="flex items-center gap-2" style={{ color: T.muted }}>
@@ -1112,7 +1112,7 @@ export function WeekPage() {
             </div>
 
             {/* Masaüstü submit bar */}
-            <div className="hidden md:flex items-center justify-between px-5 py-3"
+            <div className="hidden md:flex items-center justify-between px-5 py-3 flex-shrink-0"
               style={{ borderTop: `1px solid ${T.border}`, background: "#FAFAFA" }}>
               {submitBarContent}
             </div>
