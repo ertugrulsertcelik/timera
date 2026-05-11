@@ -550,15 +550,36 @@ chmod +x deploy.sh
 7. Push: git push origin main
 8. Sunucuda deploy: ssh ubuntu@92.5.156.75 → cd timera → ./deploy.sh
 
-### deploy.sh Ne Yapar?
+### deploy.sh Ne Yapar? (v2 — selective rebuild)
 1. .env.prod kontrolü yapar (yoksa çıkar)
 2. Swap kontrolü (yoksa 2GB ekler)
-3. git pull origin main (son kodu çeker)
-4. docker compose down (container'ları durdurur)
-5. docker compose build (cache kullanarak image'ları derler)
-6. docker compose up -d (container'ları başlatır)
-7. prisma db push (schema değişikliklerini uygular)
-8. docker image prune -f (eski image'ları temizler)
+3. `git fetch` + `git diff HEAD origin/main` ile hangi dosyaların değiştiğini saptar
+4. `git pull origin main` ile kodu çeker
+5. Değişikliğe göre seçici rebuild:
+   - Sadece `backend/` değiştiyse → yalnızca backend rebuild + up (`--no-deps`)
+   - Sadece `frontend/` değiştiyse → yalnızca frontend rebuild + up (`--no-deps`)
+   - İkisi de değiştiyse → her ikisini rebuild + up
+   - `docker-compose` değiştiyse → full `down` + `build` + `up`
+   - Hiçbir servis değişmediyse → rebuild yok, uyarı verilir
+6. Prisma migration → yalnızca backend veya compose değiştiyse (5sn bekleme ile)
+7. `docker image prune -f` (eski image'ları temizler)
+
+### Deploy Süre Referansı
+| Senaryo | Tahmini Süre |
+|---------|-------------|
+| Sadece frontend değişti | ~2-3 dk |
+| Sadece backend değişti | ~1-2 dk |
+| Backend + Frontend | ~4-5 dk |
+| Full restart (compose değişti) | ~8-10 dk |
+
+### Dockerfile Cache Optimizasyonu
+`backend/Dockerfile.prod` — layer sırası:
+- `package*.json` + `schema.prisma` → `npm ci` → `prisma generate` (bunlar cache'lenir)
+- `COPY src ./src` → `npm run build` (sadece kaynak değişince çalışır)
+
+`frontend/Dockerfile.prod` — layer sırası:
+- `package*.json` → `npm ci` (cache'lenir)
+- `COPY . .` → `npm run build` (sadece kaynak değişince çalışır)
 
 ### Sık Kullanılan Komutlar
 

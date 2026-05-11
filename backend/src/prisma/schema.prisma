@@ -61,6 +61,7 @@ model User {
   refreshTokens  RefreshToken[]
   leaveRequests  LeaveRequest[]
   managedLeaves  LeaveRequest[] @relation("ManagerLeaveApprovals")
+  reportSchedules ReportSchedule[]
 }
 
 model Project {
@@ -178,4 +179,22 @@ model LeaveRequest {
   @@unique([userId, date])
   @@index([userId, status])
   @@index([date])
+}
+
+enum ReportFrequency {
+  WEEKLY
+  MONTHLY
+}
+
+model ReportSchedule {
+  id         String          @id @default(cuid())
+  managerId  String
+  frequency  ReportFrequency
+  dayOfWeek  Int
+  emails     String[]
+  filters    Json
+  isActive   Boolean         @default(true)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  manager    User            @relation(fields: [managerId], references: [id])
 }

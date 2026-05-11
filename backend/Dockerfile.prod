@@ -2,11 +2,14 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# package.json + schema önce → npm ci ve prisma generate cache'lenir
 COPY package*.json ./
+COPY src/prisma/schema.prisma ./src/prisma/
 RUN npm ci --include=dev
-
-COPY . .
 RUN npx prisma generate --schema src/prisma/schema.prisma
+
+# Kaynak kod en son → sadece src değişince bu adımdan itibaren çalışır
+COPY src ./src
 RUN npm run build
 
 # ── Stage 2: Production image ────────────────────────────────────────────────
@@ -26,9 +29,10 @@ RUN apk add --no-cache \
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
-# Non-root user (puppeteer zaten --no-sandbox kullandığı için uyumlu)
+# Non-root user
 RUN addgroup -S timera && adduser -S timera -G timera
 
+# package.json önce → prod bağımlılıkları cache'lenir
 COPY package*.json ./
 RUN npm ci --omit=dev
 

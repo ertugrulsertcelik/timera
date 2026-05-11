@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ── Timera Production Deploy Script ─────────────────────────────────────────
+# ── Timera Production Deploy Script (v2 — selective rebuild) ─────────────────
 
 # 1. .env.prod kontrolü
 if [ ! -f ".env.prod" ]; then
@@ -23,37 +23,91 @@ else
   echo "✓ Swap zaten aktif, atlanıyor."
 fi
 
-# 3. Son kodu çek
-echo "▶ Son kod çekiliyor (git pull)..."
+# 3. Ne değişti kontrol et (pull öncesi)
+echo "▶ Değişiklikler kontrol ediliyor..."
+git fetch origin main
+CHANGED=$(git diff HEAD origin/main --name-only)
+
+if [ -z "$CHANGED" ]; then
+  echo "ℹ  Uzak repoda yeni değişiklik yok."
+  echo "   Zorla yeniden başlatmak için: docker compose -f docker-compose.prod.yml --env-file .env.prod restart"
+  exit 0
+fi
+
+echo "Değişen dosyalar:"
+echo "$CHANGED"
+echo ""
+
+# 4. Kodu çek
 git pull origin main
 
-# 4. Mevcut container'ları durdur
-echo "▶ Mevcut container'lar durduruluyor..."
-docker compose -f docker-compose.prod.yml --env-file .env.prod down
+# 5. Hangi servisler etkilendi?
+BACKEND_CHANGED=$(echo "$CHANGED" | grep -c "^backend/" || true)
+FRONTEND_CHANGED=$(echo "$CHANGED" | grep -c "^frontend/" || true)
+COMPOSE_CHANGED=$(echo "$CHANGED" | grep -c "docker-compose" || true)
 
-# 5. Image'ları derle (cache kullanılır)
-echo "▶ Image'lar derleniyor..."
-docker compose -f docker-compose.prod.yml --env-file .env.prod build
+echo "Backend değişiklik: $BACKEND_CHANGED dosya"
+echo "Frontend değişiklik: $FRONTEND_CHANGED dosya"
+echo "Compose değişiklik: $COMPOSE_CHANGED dosya"
+echo ""
 
-# 6. Container'ları başlat
-echo "▶ Container'lar başlatılıyor..."
-docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
+DC="docker compose -f docker-compose.prod.yml --env-file .env.prod"
 
-# 7. Prisma migration
-echo "▶ Prisma migration çalıştırılıyor..."
-docker compose -f docker-compose.prod.yml --env-file .env.prod exec backend \
-  npx prisma db push --schema src/prisma/schema.prisma --accept-data-loss
+# 6. Yeniden derleme ve başlatma
+if [ "$COMPOSE_CHANGED" -gt 0 ]; then
+  # ─ docker-compose dosyası değiştiyse tam restart gerekli ─
+  echo "▶ docker-compose değişti — tam yeniden başlatma (~8-10 dk)..."
+  $DC down
+  $DC build
+  $DC up -d
+
+elif [ "$BACKEND_CHANGED" -gt 0 ] && [ "$FRONTEND_CHANGED" -gt 0 ]; then
+  # ─ İkisi de değişti: paralel rebuild, sırayla up ─
+  echo "▶ Backend + Frontend rebuild (~4-5 dk)..."
+  $DC build backend frontend
+  $DC up -d --no-deps backend
+  $DC up -d --no-deps frontend
+
+elif [ "$BACKEND_CHANGED" -gt 0 ]; then
+  # ─ Sadece backend — frontend çalışmaya devam eder ─
+  echo "▶ Sadece backend rebuild (~1-2 dk)..."
+  $DC build backend
+  $DC up -d --no-deps backend
+
+elif [ "$FRONTEND_CHANGED" -gt 0 ]; then
+  # ─ Sadece frontend — backend çalışmaya devam eder ─
+  echo "▶ Sadece frontend rebuild (~2-3 dk)..."
+  $DC build frontend
+  $DC up -d --no-deps frontend
+
+else
+  # ─ Sadece kök dosyalar (scripts, docs vb.) ─
+  echo "▶ Servis kodu değişmedi — restart atlanıyor."
+fi
+
+# 7. Prisma migration — sadece backend veya compose değiştiyse
+if [ "$BACKEND_CHANGED" -gt 0 ] || [ "$COMPOSE_CHANGED" -gt 0 ]; then
+  echo "▶ Backend hazır olana kadar bekleniyor..."
+  sleep 5
+  echo "▶ Prisma migration çalıştırılıyor..."
+  $DC exec backend \
+    npx prisma db push --schema src/prisma/schema.prisma --accept-data-loss
+  echo "✓ Migration tamamlandı."
+fi
 
 # 8. Kullanılmayan image'ları temizle
-echo "▶ Kullanılmayan image'lar temizleniyor..."
 docker image prune -f
 
 echo ""
 echo "✓ Deploy tamamlandı!"
-echo "  Frontend: https://$(hostname -I | awk '{print $1}') (self-signed SSL)"
-echo "  Backend:  https://$(hostname -I | awk '{print $1}')/api"
 echo ""
-echo "  NOT: Self-signed sertifika nedeniyle tarayıcıda güvenlik uyarısı çıkacak."
-echo "  Domain eklenince: certbot --nginx -d yourdomain.com"
+echo "  Süre referansı:"
+echo "  - Sadece frontend : ~2-3 dk"
+echo "  - Sadece backend  : ~1-2 dk"
+echo "  - İkisi birden    : ~4-5 dk"
+echo "  - Full restart    : ~8-10 dk"
 echo ""
-echo "  Log takibi: docker compose -f docker-compose.prod.yml logs -f"
+echo "  Frontend : https://$(hostname -I | awk '{print $1}') (self-signed SSL)"
+echo "  Backend  : https://$(hostname -I | awk '{print $1}')/api"
+echo ""
+echo "  Log takibi: docker compose -f docker-compose.prod.yml --env-file .env.prod logs -f"

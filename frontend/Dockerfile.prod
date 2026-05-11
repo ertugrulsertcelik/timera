@@ -2,6 +2,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# package.json önce → npm ci cache'lenir, sadece src değişince atlanır
 COPY package*.json ./
 RUN npm ci
 
@@ -25,15 +26,13 @@ RUN apk add --no-cache openssl && \
       -out  /etc/ssl/certs/nginx-selfsigned.crt \
       -subj "/CN=timera/O=Timera/C=TR"
 
-# Non-root worker user oluştur
+# Non-root worker user
 RUN addgroup -S timera && adduser -S timera -G timera
 
-# nginx worker process'lerinin yazabileceği dizinleri timera'ya ver
 RUN chown -R timera:timera /var/cache/nginx /var/log/nginx /usr/share/nginx/html && \
     touch /var/run/nginx.pid && chown timera:timera /var/run/nginx.pid
 
 COPY --from=builder /app/dist /usr/share/nginx/html
-# Tam nginx.conf olarak kopyala (rate limiting http context'te tanımlanması gerekiyor)
 COPY nginx.prod.conf /etc/nginx/nginx.conf
 
 RUN chown -R timera:timera /usr/share/nginx/html
