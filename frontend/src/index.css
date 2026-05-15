@@ -20,6 +20,16 @@ html:not([data-theme="dark"]) {
   --c-text2:    #4B5563;
   --c-muted:    #9CA3AF;
   --c-orangeL:  #EFF6FF;
+  /* durum renkleri */
+  --c-warn-bg:        #FFFBEB;
+  --c-warn-border:    #FDE68A;
+  --c-warn-text:      #92400E;
+  --c-success-bg:     #F0FDF4;
+  --c-success-border: #86EFAC;
+  --c-success-text:   #14532D;
+  --c-danger-bg:      #FEF2F2;
+  --c-danger-border:  #FECACA;
+  --c-danger-text:    #991B1B;
 }
 
 html[data-theme="dark"] {
@@ -33,6 +43,16 @@ html[data-theme="dark"] {
   --c-text2:    #94A3B8;
   --c-muted:    #64748B;
   --c-orangeL:  #1E3A5F;
+  /* durum renkleri */
+  --c-warn-bg:        #2D1A00;
+  --c-warn-border:    #92400E;
+  --c-warn-text:      #FDE68A;
+  --c-success-bg:     #052E16;
+  --c-success-border: #166534;
+  --c-success-text:   #86EFAC;
+  --c-danger-bg:      #2D0A0A;
+  --c-danger-border:  #7F1D1D;
+  --c-danger-text:    #FECACA;
   color-scheme: dark;
 }
 

@@ -12,9 +12,9 @@ const T = {
   text: "var(--c-text)", text2: "var(--c-text2)", muted: "var(--c-muted)",
   orange: "#2563EB", orangeL: "var(--c-orangeL)",
   red: "#1D4ED8",
-  green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
-  purple: "#7B1FA2", purpleL: "#F3E8FF",
-  amber: "#92400E", amberL: "#FEF3C7",
+  green: "#16A34A", greenL: "var(--c-success-bg)", greenB: "var(--c-success-border)",
+  purple: "#7B1FA2",
+  amber: "var(--c-warn-text)", amberL: "var(--c-warn-bg)",
 };
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ export function UsersPage() {
                       <td className="px-5 py-3.5">
                         <span className="px-2.5 py-0.5 rounded-full text-xs font-medium"
                           style={u.role === "MANAGER"
-                            ? { background: T.purpleL, color: T.purple }
+                            ? { background: `${T.purple}18`, color: T.purple }
                             : { background: T.bg, color: T.text2, border: `1px solid ${T.border}` }}>
                           {u.role === "MANAGER" ? "Yönetici" : "Çalışan"}
                         </span>
@@ -285,9 +285,9 @@ export function UsersPage() {
                           <button onClick={() => handleToggleActive(u)}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
                             style={{
-                              background: u.isActive ? "#FEF2F2" : T.greenL,
-                              color: u.isActive ? "#991B1B" : T.green,
-                              border: `1px solid ${u.isActive ? "#FECACA" : T.greenB}`,
+                              background: u.isActive ? "var(--c-danger-bg)" : T.greenL,
+                              color: u.isActive ? "var(--c-danger-text)" : T.green,
+                              border: `1px solid ${u.isActive ? "var(--c-danger-border)" : T.greenB}`,
                               cursor: "pointer",
                             }}>
                             <i className={`ti ${u.isActive ? "ti-user-off" : "ti-user-check"}`} />
@@ -295,9 +295,9 @@ export function UsersPage() {
                           </button>
                           <button onClick={() => handleDelete(u)}
                             className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
-                            style={{ background: "#FEF2F2", color: "#991B1B", border: "1px solid #FECACA", cursor: "pointer" }}
-                            onMouseEnter={(e) => { e.currentTarget.style.background = "#FEE2E2"; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = "#FEF2F2"; }}
+                            style={{ background: "var(--c-danger-bg)", color: "var(--c-danger-text)", border: "1px solid var(--c-danger-border)", cursor: "pointer" }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = "var(--c-danger-border)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--c-danger-bg)"; }}
                           >
                             <i className="ti ti-trash" /><span className="hidden sm:inline"> Sil</span>
                           </button>

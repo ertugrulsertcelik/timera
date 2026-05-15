@@ -25,8 +25,6 @@ interface LeaderboardEntry {
 
 // altın, gümüş, bronz
 const RANK_COLORS = ["#0EA5E9", "#9E9E9E", "#8D6E63"];
-const RANK_BG = ["#FFFDE7", "#F5F5F5", "#EFEBE9"];
-const RANK_BORDER = ["#FDE68A", "#E0E0E0", "#D7CCC8"];
 const RANK_ICONS = ["ti-crown", "ti-medal", "ti-award"];
 
 function level(xp: number) { return Math.floor(xp / 1000) + 1; }
@@ -50,15 +48,13 @@ function avatarColor(name: string) {
 
 function PodiumCard({ entry, height }: { entry: LeaderboardEntry; height: number }) {
   const color = RANK_COLORS[entry.rank - 1];
-  const bg = RANK_BG[entry.rank - 1];
-  const border = RANK_BORDER[entry.rank - 1];
   const icon = RANK_ICONS[entry.rank - 1];
 
   return (
     <div className="flex flex-col items-center" style={{ width: 140 }}>
       {/* İkon rozet */}
       <div className="w-9 h-9 rounded-full flex items-center justify-center mb-2"
-        style={{ background: bg, border: `1.5px solid ${border}` }}>
+        style={{ background: `${color}18`, border: `1.5px solid ${color}50` }}>
         <i className={`ti ${icon} text-sm`} style={{ color }} />
       </div>
 
@@ -239,7 +235,7 @@ export function LeaderboardPage() {
                       <div className="flex items-center">
                         {isTop ? (
                           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-                            style={{ background: RANK_BG[entry.rank - 1], border: `1px solid ${RANK_BORDER[entry.rank - 1]}` }}>
+                            style={{ background: `${rankColor}18`, border: `1px solid ${rankColor}50` }}>
                             <i className={`ti ${RANK_ICONS[entry.rank - 1]} text-xs`}
                               style={{ color: rankColor! }} />
                           </div>

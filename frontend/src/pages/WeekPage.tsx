@@ -70,10 +70,10 @@ const T = {
 };
 
 const STATUS = {
-  DRAFT:    { label: "Taslak",     color: "var(--c-muted)",   bg: "var(--c-surface2)", border: "var(--c-border)" },
-  PENDING:  { label: "Bekliyor",   color: "#92400E", bg: "#FFFBEB", border: "#FDE68A" },
-  APPROVED: { label: "Onaylı",     color: "#166534", bg: "#F0FDF4", border: "#86EFAC" },
-  REJECTED: { label: "Reddedildi", color: "#991B1B", bg: "#FEF2F2", border: "#FECACA" },
+  DRAFT:    { label: "Taslak",     color: "var(--c-muted)",        bg: "var(--c-surface2)",    border: "var(--c-border)" },
+  PENDING:  { label: "Bekliyor",   color: "var(--c-warn-text)",    bg: "var(--c-warn-bg)",     border: "var(--c-warn-border)" },
+  APPROVED: { label: "Onaylı",     color: "var(--c-success-text)", bg: "var(--c-success-bg)",  border: "var(--c-success-border)" },
+  REJECTED: { label: "Reddedildi", color: "var(--c-danger-text)",  bg: "var(--c-danger-bg)",   border: "var(--c-danger-border)" },
 };
 
 // ─── BlockModal ───────────────────────────────────────────────────────────────
@@ -176,7 +176,7 @@ function BlockModal({ startSlot, endSlot, projects, onSave, onClose, saving, err
 
         {error && (
           <div className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm mb-4"
-            style={{ background: "#FEF2F2", border: "1px solid #FECACA", color: "#991B1B" }}>
+            style={{ background: "var(--c-danger-bg)", border: "1px solid var(--c-danger-border)", color: "var(--c-danger-text)" }}>
             <i className="ti ti-alert-circle flex-shrink-0" />{error}
           </div>
         )}
@@ -267,9 +267,9 @@ function EditEntryModal({ entry, projects, onSave, onClose, saving, error, isMob
 
         {entry.status === "PENDING" && (
           <div className="flex items-start gap-2 px-3 py-2.5 rounded-xl mb-4"
-            style={{ background: "#FFFBEB", border: "1px solid #FDE68A" }}>
-            <i className="ti ti-info-circle flex-shrink-0 mt-0.5" style={{ color: "#92400E" }} />
-            <p className="text-xs" style={{ color: "#92400E", lineHeight: 1.5 }}>
+            style={{ background: "var(--c-warn-bg)", border: "1px solid var(--c-warn-border)" }}>
+            <i className="ti ti-info-circle flex-shrink-0 mt-0.5" style={{ color: "var(--c-warn-text)" }} />
+            <p className="text-xs" style={{ color: "var(--c-warn-text)", lineHeight: 1.5 }}>
               Düzenleme yapılırsa giriş <strong>taslağa</strong> döner, tekrar onaya gönderilmesi gerekir.
             </p>
           </div>
@@ -309,7 +309,7 @@ function EditEntryModal({ entry, projects, onSave, onClose, saving, error, isMob
 
         {error && (
           <div className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm mb-4"
-            style={{ background: "#FEF2F2", border: "1px solid #FECACA", color: "#991B1B" }}>
+            style={{ background: "var(--c-danger-bg)", border: "1px solid var(--c-danger-border)", color: "var(--c-danger-text)" }}>
             <i className="ti ti-alert-circle flex-shrink-0" />{error}
           </div>
         )}
@@ -490,20 +490,20 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
       {isMobile && mobileSelectStart !== null && (
         <div style={{
           position: "sticky", top: 0, zIndex: 15,
-          background: "#FFF7ED", borderBottom: "1px solid #FED7AA",
+          background: "var(--c-warn-bg)", borderBottom: "1px solid var(--c-warn-border)",
           padding: "10px 14px",
           display: "flex", alignItems: "center", justifyContent: "space-between",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <i className="ti ti-hand-click" style={{ fontSize: 15, color: T.orange }} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#9A3412" }}>Bitiş saatini seç</span>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--c-warn-text)" }}>Bitiş saatini seç</span>
             <span style={{ fontSize: 12, fontFamily: "DM Mono, monospace", fontWeight: 700, color: T.orange }}>
               {slotToTime(mobileSelectStart)}
             </span>
           </div>
           <button
             onClick={() => setMobileSelectStart(null)}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "#9A3412", fontSize: 18, lineHeight: 1, padding: "4px 8px", minHeight: 44, display: "flex", alignItems: "center" }}>
+            style={{ background: "none", border: "none", cursor: "pointer", color: "var(--c-warn-text)", fontSize: 18, lineHeight: 1, padding: "4px 8px", minHeight: 44, display: "flex", alignItems: "center" }}>
             <i className="ti ti-x" />
           </button>
         </div>
@@ -617,8 +617,8 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
                   </span>
                   <span style={{
                     fontSize: 9, padding: "1px 6px", borderRadius: 10, fontWeight: 500,
-                    background: e.status === "APPROVED" ? "#dcfce7" : e.status === "PENDING" ? "#fef9c3" : e.status === "REJECTED" ? "#fee2e2" : STATUS.DRAFT.bg,
-                    color: e.status === "APPROVED" ? "#15803d" : e.status === "PENDING" ? "#a16207" : e.status === "REJECTED" ? "#b91c1c" : STATUS.DRAFT.color,
+                    background: e.status === "APPROVED" ? "var(--c-success-bg)" : e.status === "PENDING" ? "var(--c-warn-bg)" : e.status === "REJECTED" ? "var(--c-danger-bg)" : STATUS.DRAFT.bg,
+                    color: e.status === "APPROVED" ? "var(--c-success-text)" : e.status === "PENDING" ? "var(--c-warn-text)" : e.status === "REJECTED" ? "var(--c-danger-text)" : STATUS.DRAFT.color,
                   }}>
                     {e.status === "APPROVED" ? "Onaylı" : e.status === "PENDING" ? "Bekliyor" : e.status === "REJECTED" ? "Reddedildi" : "Taslak"}
                   </span>
@@ -740,7 +740,7 @@ function TimeGrid({ date, entries, projects, onAddEntry, onDeleteEntry, onUpdate
                 <button onClick={handleDelete}
                   className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-left"
                   style={{ background: "none", border: "none", color: "#DC2626", cursor: "pointer" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#FEF2F2")}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--c-danger-bg)")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "none")}>
                   <i className="ti ti-trash text-sm" />
                   Sil
@@ -960,9 +960,9 @@ export function WeekPage() {
         {/* İzin banner */}
         {approvedLeaves.some((l) => l.date === activeDate) && (
           <div className="flex items-center gap-3 px-4 md:px-6 py-3 flex-shrink-0"
-            style={{ background: "#F0FDF4", borderBottom: "1px solid #86EFAC" }}>
-            <i className="ti ti-beach flex-shrink-0" style={{ color: "#16A34A" }} />
-            <span className="text-sm flex-1" style={{ color: "#14532D" }}>
+            style={{ background: "var(--c-success-bg)", borderBottom: "1px solid var(--c-success-border)" }}>
+            <i className="ti ti-beach flex-shrink-0" style={{ color: "var(--c-success-text)" }} />
+            <span className="text-sm flex-1" style={{ color: "var(--c-success-text)" }}>
               Bu gün için onaylanmış bir izniniz var.
             </span>
           </div>
@@ -971,13 +971,13 @@ export function WeekPage() {
         {/* Hatırlatma banner */}
         {showBanner && (
           <div className="flex items-center gap-3 px-4 md:px-6 py-3 flex-shrink-0"
-            style={{ background: "#FFFBEB", borderBottom: "1px solid #FDE68A" }}>
+            style={{ background: "var(--c-warn-bg)", borderBottom: "1px solid var(--c-warn-border)" }}>
             <i className="ti ti-alert-triangle flex-shrink-0" style={{ color: "#F59E0B" }} />
-            <span className="text-sm flex-1" style={{ color: "#92400E" }}>
+            <span className="text-sm flex-1" style={{ color: "var(--c-warn-text)" }}>
               Bugün henüz giriş yapmadın — hadi bir blok seç!
             </span>
             <button onClick={() => setBannerDismissedDate(today)}
-              style={{ background: "none", border: "none", color: "#B45309", cursor: "pointer", minHeight: 44, minWidth: 44 }}>
+              style={{ background: "none", border: "none", color: "var(--c-warn-text)", cursor: "pointer", minHeight: 44, minWidth: 44 }}>
               <i className="ti ti-x text-sm" />
             </button>
           </div>
@@ -1044,8 +1044,8 @@ export function WeekPage() {
                   onClick={() => setActiveDate(date)}
                   className="flex flex-col items-center px-3 py-2 rounded-xl transition-all flex-shrink-0"
                   style={{
-                    background: isActive ? T.orange : leave ? "#F0FDF4" : T.surface,
-                    border: `1.5px solid ${isActive ? T.orange : leave ? "#86EFAC" : isTday ? T.orange + "50" : T.border}`,
+                    background: isActive ? T.orange : leave ? "var(--c-success-bg)" : T.surface,
+                    border: `1.5px solid ${isActive ? T.orange : leave ? "var(--c-success-border)" : isTday ? T.orange + "50" : T.border}`,
                     cursor: "pointer", minWidth: 52,
                     boxShadow: isActive ? `0 2px 8px ${T.orange}30` : "0 1px 2px rgba(0,0,0,0.04)",
                     minHeight: 44,

@@ -12,8 +12,8 @@ const T = {
   bg: "var(--c-bg)", surface: "var(--c-surface)", border: "var(--c-border)",
   text: "var(--c-text)", text2: "var(--c-text2)", muted: "var(--c-muted)",
   orange: "#2563EB", orangeL: "var(--c-orangeL)",
-  green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
-  red: "#991B1B", redL: "#FEF2F2", redB: "#FECACA",
+  green: "#16A34A", greenL: "var(--c-success-bg)", greenB: "var(--c-success-border)",
+  red: "var(--c-danger-text)", redL: "var(--c-danger-bg)", redB: "var(--c-danger-border)",
 };
 
 // ─── Tipler ──────────────────────────────────────────────────────────────────
@@ -127,7 +127,7 @@ function RejectModal({ entry, onConfirm, onClose, loading }: RejectModalProps) {
             disabled={loading}
             className="flex-1 py-2.5 rounded-xl text-xs font-medium"
             style={{
-              background: loading ? "#F3F4F6" : "#FEF2F2",
+              background: loading ? T.border : T.redL,
               border: `1.5px solid ${loading ? T.border : T.redB}`,
               color: loading ? T.muted : T.red,
               cursor: loading ? "not-allowed" : "pointer",
@@ -239,7 +239,7 @@ export function ApprovalsPage() {
             <span className="text-sm font-semibold" style={{ color: T.text }}>Bekleyen Onaylar</span>
             {!loading && entries.length > 0 && (
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                style={{ background: "#FEF3C7", color: "#92400E" }}>
+                style={{ background: "var(--c-warn-bg)", color: "var(--c-warn-text)" }}>
                 {entries.length} giriş
               </span>
             )}
@@ -396,8 +396,8 @@ export function ApprovalsPage() {
                             color: busy ? T.muted : T.red,
                             cursor: busy ? "not-allowed" : "pointer",
                           }}
-                          onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = "#FEE2E2"; }}
-                          onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = T.redL; }}
+                          onMouseEnter={(e) => { if (!busy) e.currentTarget.style.background = "var(--c-danger-border)"; }}
+                          onMouseLeave={(e) => { if (!busy) e.currentTarget.style.background = "var(--c-danger-bg)"; }}
                         >
                           <i className="ti ti-x text-sm" />
                           <span className="hidden sm:inline">Reddet</span>

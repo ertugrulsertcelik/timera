@@ -10,10 +10,10 @@ const T = {
   bg: "var(--c-bg)", surface: "var(--c-surface)", border: "var(--c-border)",
   text: "var(--c-text)", text2: "var(--c-text2)", muted: "var(--c-muted)",
   orange: "#2563EB", orangeL: "var(--c-orangeL)",
-  green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
+  green: "#16A34A", greenL: "var(--c-success-bg)", greenB: "var(--c-success-border)",
   blue: "#1565C0", blueL: "#EFF6FF", blueB: "#BFDBFE",
-  red: "#991B1B", redL: "#FEF2F2", redB: "#FECACA",
-  amber: "#92400E", amberL: "#FEF3C7", amberB: "#FDE68A",
+  red: "var(--c-danger-text)", redL: "var(--c-danger-bg)", redB: "var(--c-danger-border)",
+  amber: "var(--c-warn-text)", amberL: "var(--c-warn-bg)", amberB: "var(--c-warn-border)",
   gray: "#6B7280", grayL: "var(--c-surface2)",
 };
 

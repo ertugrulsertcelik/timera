@@ -12,8 +12,8 @@ const T = {
   bg: "var(--c-bg)", surface: "var(--c-surface)", border: "var(--c-border)",
   text: "var(--c-text)", text2: "var(--c-text2)", muted: "var(--c-muted)",
   orange: "#2563EB", orangeL: "var(--c-orangeL)",
-  green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
-  red: "#991B1B", redL: "#FEF2F2", redB: "#FECACA",
+  green: "#16A34A", greenL: "var(--c-success-bg)", greenB: "var(--c-success-border)",
+  red: "var(--c-danger-text)", redL: "var(--c-danger-bg)", redB: "var(--c-danger-border)",
 };
 
 // ─── Renk paleti ──────────────────────────────────────────────────────────────
@@ -483,7 +483,7 @@ export function ProjectsPage() {
                     className="grid items-center px-4 py-3.5 transition-all"
                     style={{
                       gridTemplateColumns: "2fr 3fr 90px 110px",
-                      background: busy ? "#FFF7F5" : T.surface,
+                      background: busy ? T.bg : T.surface,
                       borderBottom: idx < displayed.length - 1 ? `1px solid ${T.border}` : "none",
                       opacity: busy ? 0.7 : 1,
                     }}>
@@ -561,7 +561,7 @@ export function ProjectsPage() {
                           background: "transparent", border: `1px solid ${T.border}`,
                           color: busy ? T.border : T.muted, cursor: busy ? "not-allowed" : "pointer",
                         }}
-                        onMouseEnter={(e) => { if (!busy) { e.currentTarget.style.borderColor = "#FECACA"; e.currentTarget.style.color = "#B91C1C"; e.currentTarget.style.background = "#FEF2F2"; } }}
+                        onMouseEnter={(e) => { if (!busy) { e.currentTarget.style.borderColor = "var(--c-danger-border)"; e.currentTarget.style.color = "var(--c-danger-text)"; e.currentTarget.style.background = "var(--c-danger-bg)"; } }}
                         onMouseLeave={(e) => { if (!busy) { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.color = T.muted; e.currentTarget.style.background = "transparent"; } }}
                         title="Sil"
                       >

@@ -9,8 +9,8 @@ const T = {
   bg: "var(--c-bg)", surface: "var(--c-surface)", border: "var(--c-border)",
   text: "var(--c-text)", text2: "var(--c-text2)", muted: "var(--c-muted)",
   orange: "#2563EB", orangeL: "var(--c-orangeL)",
-  red: "#1D4ED8", redL: "#FEF2F2",
-  green: "#16A34A", greenL: "#F0FDF4", greenB: "#86EFAC",
+  red: "#1D4ED8", redL: "var(--c-danger-bg)",
+  green: "#16A34A", greenL: "var(--c-success-bg)", greenB: "var(--c-success-border)",
 };
 
 type WebhookType = "SLACK" | "TEAMS";
@@ -298,7 +298,7 @@ export function WebhooksPage() {
                         disabled={deletingId === h.id}
                         className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium"
                         style={{
-                          background: T.redL, border: `1px solid #FECACA`,
+                          background: T.redL, border: `1px solid var(--c-danger-border)`,
                           color: T.red, cursor: "pointer",
                         }}
                       >
