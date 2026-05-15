@@ -86,7 +86,7 @@ function PodiumCard({ entry, height }: { entry: LeaderboardEntry; height: number
         style={{
           height,
           background: `linear-gradient(180deg, ${color}18 0%, ${color}05 100%)`,
-          border: `1.5px solid ${border}`,
+          border: `1.5px solid ${color}50`,
           borderBottom: "none",
         }}>
         <span className="text-xs font-semibold" style={{ color: `${color}AA`, fontFamily: "DM Mono, monospace" }}>

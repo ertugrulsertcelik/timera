@@ -25,7 +25,7 @@ const TYPE_COLOR: Record<string, string> = {
   ANNUAL: T.green, SICK: T.blue, UNPAID: T.gray, PUBLIC_HOLIDAY: T.orange,
 };
 const TYPE_BG: Record<string, string> = {
-  ANNUAL: T.greenL, SICK: T.blueL, UNPAID: "#F3F4F6", PUBLIC_HOLIDAY: T.orangeL,
+  ANNUAL: T.greenL, SICK: T.blueL, UNPAID: "var(--c-surface2)", PUBLIC_HOLIDAY: T.orangeL,
 };
 const STATUS_LABEL: Record<string, string> = {
   PENDING: "Bekliyor", APPROVED: "Onaylandı", REJECTED: "Reddedildi",
@@ -87,7 +87,7 @@ function RejectModal({ leave, onConfirm, onClose, saving }: {
             Vazgeç
           </button>
           <button onClick={() => onConfirm(note)} disabled={saving} className="flex-1 py-2 rounded-xl text-xs font-medium"
-            style={{ background: saving ? "#F3F4F6" : T.redL, border: `1px solid ${saving ? T.border : T.redB}`, color: saving ? T.muted : T.red, cursor: saving ? "not-allowed" : "pointer" }}>
+            style={{ background: saving ? T.border : T.redL, border: `1px solid ${saving ? T.border : T.redB}`, color: saving ? T.muted : T.red, cursor: saving ? "not-allowed" : "pointer" }}>
             {saving ? "Reddediliyor..." : "Reddet"}
           </button>
         </div>
