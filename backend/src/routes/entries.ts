@@ -85,8 +85,11 @@ router.post("/", requireAuth, async (req: AuthRequest, res, next: NextFunction) 
     const overlap = await checkOverlap(userId, date, startTime, endTime, prisma);
     if (overlap) return res.status(409).json({ error: "Bu saatte başka bir giriş var" });
 
-    const entry = await prisma.timeEntry.create({
-      data: { userId, projectId, date, startTime, endTime, note },
+    // REJECTED entry için aynı slot'ta upsert — unique constraint'i yönetir
+    const entry = await prisma.timeEntry.upsert({
+      where: { userId_date_startTime: { userId, date, startTime } },
+      update: { projectId, endTime, note, status: "DRAFT" },
+      create: { userId, projectId, date, startTime, endTime, note },
       include: { project: true },
     });
     res.status(201).json(entry);
