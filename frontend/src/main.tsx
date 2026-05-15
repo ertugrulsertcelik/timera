@@ -183,6 +183,7 @@ function MobileTabBar() {
       ? [{ icon: "ti-checks", label: "Onaylar", path: "/approvals", badge: pendingCount }]
       : []),
     { icon: "ti-beach", label: "İzin", path: "/leaves" },
+    { icon: "ti-trophy", label: "Sıralama", path: "/leaderboard" },
     { icon: "ti-user", label: "Çıkış", path: null },
   ];
 
