@@ -35,8 +35,10 @@ router.post("/:id/approve", requireAuth, requireManager, async (req: AuthRequest
 
     await prisma.$transaction([
       prisma.timeEntry.update({ where: { id: entry.id }, data: { status: "APPROVED" } }),
-      prisma.approval.create({
-        data: { entryId: entry.id, managerId: req.user!.id, action: "approved" },
+      prisma.approval.upsert({
+        where: { entryId: entry.id },
+        update: { managerId: req.user!.id, action: "approved", note: null },
+        create: { entryId: entry.id, managerId: req.user!.id, action: "approved" },
       }),
     ]);
 
@@ -66,8 +68,10 @@ router.post("/:id/reject", requireAuth, requireManager, async (req: AuthRequest,
 
     await prisma.$transaction([
       prisma.timeEntry.update({ where: { id: entry.id }, data: { status: "REJECTED" } }),
-      prisma.approval.create({
-        data: { entryId: entry.id, managerId: req.user!.id, action: "rejected", note: parsed.data.note },
+      prisma.approval.upsert({
+        where: { entryId: entry.id },
+        update: { managerId: req.user!.id, action: "rejected", note: parsed.data.note },
+        create: { entryId: entry.id, managerId: req.user!.id, action: "rejected", note: parsed.data.note },
       }),
     ]);
 
